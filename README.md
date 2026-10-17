@@ -37,7 +37,7 @@ flottante) : même effet que `/poly map reset`.
 | Glisser l'en-tête | Déplacer la carte |
 | Poignée bas-droite | Redimensionner la carte |
 | Cadenas de l'en-tête | Figer / libérer la carte (ni déplacement ni redimensionnement) |
-| Molette | Zoom (plus de niveaux que la carte de Blizzard), gardé d'une zone à l'autre |
+| Molette | Zoom fluide (×1,2 par cran) vers le point sous le curseur, plus profond que la carte de Blizzard, gardé d'une zone à l'autre |
 | Glisser sur la carte | Déplacer la vue |
 | Clic sur la carte | **Ping** : signal animé de 5 s, montré aussi sur la carte de vos autres personnages |
 | Alt + clic droit | Point **TomTom** à cet endroit (si TomTom est installé) |
@@ -125,6 +125,7 @@ propres à chaque personnage) :
 
 ## Version
 
+`1.3.1` : zoom à la molette fluide, centré sur le point sous le curseur (plus de recentrage ni de paliers).
 `1.3.0` : repères de BtWQuests (quêtes disponibles, objectifs suivis) et de MidnightRoutine (point de navigation).
 `1.2.0` : correction de la carte vide (cadre de bordure attendu par le moteur de Blizzard) ; plan par défaut « Dialogue » (le plus haut utilisable, réglage existant repris une fois) et sept plans au choix.
 `1.1.0` : Maj + clic gauche sur le bouton **Map** = recentrer la carte (`/poly map reset`).

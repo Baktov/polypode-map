@@ -256,6 +256,65 @@ local function ExtendZoomLevels(scroll)
 	end
 end
 
+-- Molette : zoom progressif (×1,2 par cran, pas d'un niveau à l'autre) qui garde fixe le point
+-- sous le curseur, au lieu du zoom de Blizzard qui recentre la vue sur le curseur et, en zoom
+-- avant, déplace la vue avant d'agrandir. Le moteur anime l'échelle ; après chacune de ses images,
+-- la vue est recalée pour que le point visé reste sous le curseur (centre = p + (c0 - p) × s0 / s).
+local WHEEL_ZOOM_FACTOR = 1.2
+local ZOOM_LERP = 0.25 -- vitesse d'animation (Blizzard : 0,15)
+
+local function SmoothWheelZoom(map, scroll, onZoom)
+	scroll:SetScalingMode("SCALING_MODE_LINEAR")
+	scroll.normalizedZoomLerpAmount = ZOOM_LERP
+	scroll.normalizedPanXLerpAmount = ZOOM_LERP
+	scroll.normalizedPanYLerpAmount = ZOOM_LERP
+	local anchor -- { px, py, cx, cy, s0 } : point visé, centre et échelle au début du zoom
+
+	scroll:SetScript("OnMouseWheel", function(self, delta)
+		if not (self.zoomLevels and #self.zoomLevels > 0) then
+			return
+		end
+		local minScale, maxScale = self:GetScaleForMinZoom(), self:GetScaleForMaxZoom()
+		local current = self:GetCanvasScale()
+		local target = Clamp((self.targetScale or current) * WHEEL_ZOOM_FACTOR ^ delta, minScale, maxScale)
+		if target == self.targetScale then
+			return
+		end
+		local px, py = self:GetNormalizedCursorPosition()
+		anchor = { px = px, py = py, cx = self:GetCurrentScrollX() or 0.5, cy = self:GetCurrentScrollY() or 0.5, s0 = current }
+		self:SetZoomTarget(target)
+		onZoom()
+	end)
+
+	scroll:HookScript("OnUpdate", function(self)
+		if not anchor or not self.currentScale then
+			return
+		end
+		local ratio = anchor.s0 / self.currentScale
+		local x = anchor.px + (anchor.cx - anchor.px) * ratio
+		local y = anchor.py + (anchor.cy - anchor.py) * ratio
+		local minX, maxX, minY, maxY = self:CalculateScrollExtentsAtScale(self.currentScale)
+		x = minX <= maxX and Clamp(x, minX, maxX) or 0.5
+		y = minY <= maxY and Clamp(y, minY, maxY) or 0.5
+		self.targetScrollX, self.currentScrollX = x, x
+		self.targetScrollY, self.currentScrollY = y, y
+		self:SetNormalizedHorizontalScroll(x)
+		self:SetNormalizedVerticalScroll(y)
+		map:OnCanvasPanChanged()
+		if self.currentScale == self.targetScale then
+			anchor = nil
+		end
+	end)
+
+	-- Glisser la vue pendant l'animation : le point visé est abandonné.
+	scroll:HookScript("OnMouseDown", function()
+		anchor = nil
+	end)
+	scroll:HookScript("OnHide", function()
+		anchor = nil
+	end)
+end
+
 local function PlayerMapID()
 	return MapUtil and MapUtil.GetDisplayableMapForPlayer and MapUtil.GetDisplayableMapForPlayer()
 end
@@ -364,9 +423,7 @@ local function CreateCanvas(parent)
 		return false
 	end)
 
-	scroll:HookScript("OnMouseWheel", function()
-		SaveZoom()
-	end)
+	SmoothWheelZoom(map, scroll, SaveZoom)
 	return map
 end
 
