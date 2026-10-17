@@ -30,7 +30,7 @@ local DEFAULTS = {
 	width = 300, height = 220,
 	scale = 100, -- % taille de la fenêtre
 	opacity = 100, -- % opacité hors survol
-	strata = "LOW",
+	strata = "DIALOG", -- plan le plus haut utilisable (les fenêtres d'options restent devant : Raise)
 	followPlayer = true, -- hors survol : carte du joueur, centrée sur lui
 	headerAlways = false, -- en-tête (zone, coordonnées) affiché même hors survol
 	pinScale = 70, -- % taille des icônes de Blizzard (quêtes, points d'intérêt...)
@@ -312,6 +312,12 @@ local function CreateCanvas(parent)
 	scroll:SetAllPoints(map)
 	map.ScrollContainer = scroll
 	ExtendZoomLevels(scroll)
+	-- Cadre de bordure attendu par MapCanvasMixin (EvaluateLockReasons, dès OnLoad) : sur les
+	-- cartes de Blizzard, il bloque la souris quand la carte est verrouillée. Transparent ici.
+	local border = CreateFrame("Frame", nil, map)
+	border:SetAllPoints(map)
+	border:EnableMouse(false)
+	map.BorderFrame = border
 
 	Mixin(map, MapCanvasMixin)
 	map:OnLoad()
@@ -678,9 +684,16 @@ function ns.ApplyMemberScale()
 end
 
 -- Affiche / masque la carte (bouton « Map », /poly map) ; show nil = bascule.
+local built = false
 function P.ToggleMap(show)
-	if not frame then
+	if not built then
+		-- Construction précédente interrompue par une erreur : cadre vide écarté, on recommence.
+		if frame then
+			frame:Hide()
+			frame = nil
+		end
 		Build()
+		built = true
 	end
 	if show == nil then
 		show = not frame:IsShown()
@@ -804,8 +817,13 @@ local function BuildSettingsPanel()
 		"Clic sur la carte : signal animé à cet endroit, montré aussi sur la carte des autres personnages "
 		.. "(qui ont Polypode Map).")
 	AddDropdown("strata", "Plan de la fenêtre", {
-		{ "BACKGROUND", "Arrière-plan" }, { "LOW", "Bas" }, { "MEDIUM", "Moyen" }, { "HIGH", "Haut" },
-	}, "Plan d'affichage de la carte par rapport au reste de l'interface.", ns.ApplyLayout)
+		{ "FULLSCREEN_DIALOG", "7 - Plein écran (dialogue)" }, { "FULLSCREEN", "6 - Plein écran" },
+		{ "DIALOG", "5 - Dialogue (défaut)" }, { "HIGH", "4 - Haut" }, { "MEDIUM", "3 - Moyen" },
+		{ "LOW", "2 - Bas" }, { "BACKGROUND", "1 - Arrière-plan" },
+	}, "Plan d'affichage de la carte par rapport au reste de l'interface, du plus haut (7) au plus bas (1). "
+		.. "Par défaut « Dialogue » : devant les barres d'action et la plupart des fenêtres ; descendre si la "
+		.. "carte cache quelque chose. Au-dessus de « Dialogue », elle peut passer devant les menus.",
+		ns.ApplyLayout)
 
 	Settings.RegisterAddOnCategory(category)
 	ns.settingsCategory = category
@@ -893,6 +911,11 @@ events:SetScript("OnEvent", function(_, event, addonName)
 				if PolypodeMapDB[key] == nil then
 					PolypodeMapDB[key] = value
 				end
+			end
+			-- 1.2.0 : plan par défaut passé de « Bas » à « Dialogue », repris une fois.
+			if not PolypodeMapDB.strataDialog then
+				PolypodeMapDB.strata = DEFAULTS.strata
+				PolypodeMapDB.strataDialog = true
 			end
 		end
 	elseif event == "PLAYER_LOGIN" then

@@ -98,7 +98,7 @@ propres à chaque personnage) :
 | Points TomTom | Oui | Points TomTom / HereBeDragons ; Alt + clic droit pour en créer |
 | HandyNotes | Oui | Notes de HandyNotes |
 | Ping au clic | Oui | Clic sur la carte : ping chez vous et vos autres personnages |
-| Plan de la fenêtre | Bas | Plan d'affichage par rapport au reste de l'interface |
+| Plan de la fenêtre | 5 - Dialogue | Plan d'affichage, du plus haut (7 - Plein écran dialogue) au plus bas (1 - Arrière-plan) ; « Dialogue » passe devant les barres d'action et la plupart des fenêtres, descendre si la carte cache quelque chose |
 
 ---
 
@@ -116,6 +116,7 @@ propres à chaque personnage) :
 
 ## Version
 
+`1.2.0` : correction de la carte vide (cadre de bordure attendu par le moteur de Blizzard) ; plan par défaut « Dialogue » (le plus haut utilisable, réglage existant repris une fois) et sept plans au choix.
 `1.1.0` : Maj + clic gauche sur le bouton **Map** = recentrer la carte (`/poly map reset`).
 `1.0.1` : `/poly map reset` (carte recentrée) ; repères des personnages sans erreur « action bloquée » en combat.
 `1.0.0` : première version (carte permanente, personnages de l'équipe synchronisés, quêtes,
