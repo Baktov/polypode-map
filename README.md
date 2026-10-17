@@ -35,6 +35,7 @@ flottante) : même effet que `/poly map reset`.
 |---|---|
 | Survol | En-tête (nom de la zone, coordonnées du curseur), poignée de taille, carte opaque |
 | Glisser l'en-tête | Déplacer la carte |
+| Clic gauche sur l'en-tête | Ajuster le cadre aux proportions de la carte affichée (largeur gardée, hauteur recalculée ; sans effet si la carte est figée) |
 | Poignée bas-droite | Redimensionner la carte |
 | Cadenas de l'en-tête | Figer / libérer la carte (ni déplacement ni redimensionnement) |
 | Molette | Zoom fluide (×1,2 par cran) vers le point sous le curseur, plus profond que la carte de Blizzard, gardé d'une zone à l'autre |
@@ -125,6 +126,7 @@ propres à chaque personnage) :
 
 ## Version
 
+`1.4.0` : clic gauche sur l'en-tête = cadre ajusté aux proportions de la carte affichée.
 `1.3.1` : zoom à la molette fluide, centré sur le point sous le curseur (plus de recentrage ni de paliers).
 `1.3.0` : repères de BtWQuests (quêtes disponibles, objectifs suivis) et de MidnightRoutine (point de navigation).
 `1.2.0` : correction de la carte vide (cadre de bordure attendu par le moteur de Blizzard) ; plan par défaut « Dialogue » (le plus haut utilisable, réglage existant repris une fois) et sept plans au choix.

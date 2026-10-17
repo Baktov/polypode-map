@@ -546,6 +546,8 @@ local function ShowHeaderTooltip(owner)
 	GameTooltip:SetOwner(owner, "ANCHOR_TOP")
 	GameTooltip:AddLine("Polypode Map")
 	GameTooltip:AddLine("Glisser l'en-tête : déplacer la carte (sauf si elle est figée)", 1, 1, 1, true)
+	GameTooltip:AddLine("Clic gauche sur l'en-tête : ajuster le cadre aux proportions de la carte affichée",
+		1, 1, 1, true)
 	GameTooltip:AddLine("Clic droit sur l'en-tête : options", 1, 1, 1, true)
 	GameTooltip:AddLine("Molette : zoom ; glisser sur la carte : déplacer la vue", 1, 1, 1, true)
 	if Settings_().ping then
@@ -589,7 +591,8 @@ local function Build()
 	local background = header:CreateTexture(nil, "BACKGROUND")
 	background:SetAllPoints()
 	background:SetColorTexture(0, 0, 0, 0.65)
-	header:SetScript("OnDragStart", function()
+	header:SetScript("OnDragStart", function(self)
+		self.dragged = true -- le relâchement qui suit n'est pas un clic
 		if not Settings_().locked then
 			frame:StartMoving()
 		end
@@ -598,10 +601,16 @@ local function Build()
 		frame:StopMovingOrSizing()
 		SavePosition()
 	end)
+	header:SetScript("OnMouseDown", function(self)
+		self.dragged = false
+	end)
 	header:SetScript("OnMouseUp", function(self, button)
 		if button == "RightButton" then
 			ShowOptions(self)
+		elseif button == "LeftButton" and not self.dragged then
+			ns.FitToMap()
 		end
+		self.dragged = false
 	end)
 	header:SetScript("OnEnter", ShowHeaderTooltip)
 	header:SetScript("OnLeave", function()
@@ -725,6 +734,32 @@ local function Build()
 	UpdateHover(false)
 	canvas:Show()
 	P.ui.mapFrame = frame
+end
+
+-- Cadre ajusté aux proportions de la carte affichée (clic gauche sur l'en-tête) : largeur gardée,
+-- hauteur recalculée ; si elle sort des bornes, c'est la largeur qui s'adapte. Rien si la carte
+-- est figée. Vue dézoomée, la carte remplit alors tout le cadre.
+function ns.FitToMap()
+	if not (frame and canvas) or Settings_().locked then
+		return
+	end
+	local layers = C_Map.GetMapArtLayers(canvas:GetMapID())
+	local layer = layers and layers[1]
+	if not (layer and layer.layerWidth and layer.layerWidth > 0 and layer.layerHeight > 0) then
+		return
+	end
+	local ratio = layer.layerHeight / layer.layerWidth
+	local border = 2 -- 1 pixel de bordure de chaque côté
+	local width = frame:GetWidth()
+	local height = (width - border) * ratio + border
+	if height < MIN_HEIGHT or height > MAX_HEIGHT then
+		height = Clamp(height, MIN_HEIGHT, MAX_HEIGHT)
+		width = Clamp((height - border) / ratio + border, MIN_WIDTH, MAX_WIDTH)
+	end
+	frame:SetSize(width, height)
+	SavePosition()
+	canvas:OnFrameSizeChanged() -- niveaux de zoom recalculés pour la nouvelle taille
+	ApplyZoom()
 end
 
 -- Taille des repères du groupe (Blizzard) et de ceux de Polypode.
