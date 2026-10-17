@@ -210,6 +210,9 @@ end
 
 local MemberPinMixin = CreateFromMixins(MapCanvasPinMixin)
 MemberPinMixin.mouseMotion = true
+-- AcquirePin appelle SetPassThroughButtons, interdit en combat (repères recréés à chaque
+-- changement d'équipe ou de groupe) : nos repères ne prennent pas les clics, rien à transmettre.
+MemberPinMixin.SetPassThroughButtons = function() end
 
 function MemberPinMixin:OnLoad()
 	self:SetSize(MEMBER_PIN_SIZE, MEMBER_PIN_SIZE)
@@ -379,6 +382,7 @@ end
 -- PING ----------------------------------------------------------------------------------------
 
 local PingPinMixin = CreateFromMixins(MapCanvasPinMixin)
+PingPinMixin.SetPassThroughButtons = function() end -- comme les repères des personnages (combat)
 
 function PingPinMixin:OnLoad()
 	self:SetSize(32, 32)

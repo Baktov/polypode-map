@@ -837,13 +837,31 @@ if P.AddTitleButton then
 	})
 end
 
+-- Carte remise au centre de l'écran, à sa taille et à son plan par défaut, et affichée.
+function ns.ResetMap()
+	local db = Settings_()
+	for _, field in ipairs({ "point", "relativePoint", "x", "y", "width", "height", "scale", "strata" }) do
+		db[field] = DEFAULTS[field]
+	end
+	db.point, db.relativePoint, db.x, db.y = "CENTER", "CENTER", 0, 0
+	db.locked = false
+	P.ToggleMap(true)
+	ApplyLayout()
+	UpdateLockButton()
+end
+
+-- /poly map : bascule ; /poly map reset : carte recentrée.
+local function SlashMap(args)
+	if args and args[1] and args[1]:lower() == "reset" then
+		ns.ResetMap()
+	else
+		P.ToggleMap()
+	end
+end
+
 if P.RegisterSlashCommand then
-	P.RegisterSlashCommand("map", function()
-		P.ToggleMap()
-	end, "afficher / masquer la petite carte de zone")
-	P.RegisterSlashCommand("carte", function()
-		P.ToggleMap()
-	end) -- alias
+	P.RegisterSlashCommand("map", SlashMap, "afficher / masquer la petite carte de zone (map reset : la recentrer)")
+	P.RegisterSlashCommand("carte", SlashMap) -- alias
 end
 
 -- Équipe sélectionnée, roster changés : les repères suivent.
