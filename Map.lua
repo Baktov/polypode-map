@@ -822,6 +822,8 @@ if P.AddTitleButton then
 		onClick = function(button, mouseButton)
 			if mouseButton == "RightButton" then
 				ShowOptions(button)
+			elseif IsShiftKeyDown() then
+				ns.ResetMap()
 			else
 				P.ToggleMap()
 			end
@@ -829,6 +831,7 @@ if P.AddTitleButton then
 		tooltip = {
 			"Polypode Map",
 			"Clic gauche : afficher / masquer la petite carte de zone (personnages de l'équipe, quêtes, TomTom).",
+			"Maj + clic gauche : recentrer la carte (position, taille et plan par défaut), comme /poly map reset",
 			"Clic droit : options de la carte",
 		},
 		onCreate = function(button)

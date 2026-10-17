@@ -28,7 +28,8 @@ Nécessite **Polypode 2.5.0** ou plus récent.
 
 Le bouton **Map** (barre de titre de la fenêtre Polypode, clic gauche) ou `/poly map`
 (`/poly carte`) affiche ou masque la carte ; `/poly map reset` la remet au centre de l'écran, à sa taille et à son plan par défaut (carte introuvable). Clic droit sur le bouton ou sur l'en-tête de la carte :
-options.
+options. **Maj + clic gauche** sur le bouton (fenêtre Polypode ou colonne des modules de la barre
+flottante) : même effet que `/poly map reset`.
 
 | Geste | Effet |
 |---|---|
@@ -115,6 +116,7 @@ propres à chaque personnage) :
 
 ## Version
 
+`1.1.0` : Maj + clic gauche sur le bouton **Map** = recentrer la carte (`/poly map reset`).
 `1.0.1` : `/poly map reset` (carte recentrée) ; repères des personnages sans erreur « action bloquée » en combat.
 `1.0.0` : première version (carte permanente, personnages de l'équipe synchronisés, quêtes,
 expéditions, TomTom, HandyNotes, ping).
