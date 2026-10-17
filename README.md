@@ -71,6 +71,13 @@ point de Blizzard sous le repère.
   HereBeDragons. Quand la grande carte (M) est ouverte, ils y sont ; ils reviennent sur la petite
   carte à sa fermeture.
 - **HandyNotes** (option) : notes de ses modules, si l'addon est installé.
+- **BtWQuests** (option) : quêtes disponibles de ses chaînes de quêtes et objectifs des quêtes
+  suivies (ses propres options d'affichage sur la carte restent valables) ; clic sur un repère :
+  point de navigation.
+- **MidnightRoutine** (option) : point de navigation de la routine en cours.
+- Repères posés par d'autres addons via HereBeDragons (affichés avec les points TomTom) :
+  **RXPGuides** (étapes, trésors et vendeurs), **APR**, **WaypointUI**, **HomeDecor**...
+- **All The Things** : clic droit sur un groupe de sa liste = points TomTom, donc affichés.
 - **RareScanner** n'est pas repris : ses repères sont liés à la grande carte. Les rares visibles en
   jeu apparaissent par les vignettes de Blizzard.
 
@@ -97,6 +104,8 @@ propres à chaque personnage) :
 | Expéditions | Oui | Quêtes mondiales de la zone |
 | Points TomTom | Oui | Points TomTom / HereBeDragons ; Alt + clic droit pour en créer |
 | HandyNotes | Oui | Notes de HandyNotes |
+| BtWQuests | Oui | Quêtes disponibles et objectifs de BtWQuests |
+| MidnightRoutine | Oui | Point de navigation de MidnightRoutine |
 | Ping au clic | Oui | Clic sur la carte : ping chez vous et vos autres personnages |
 | Plan de la fenêtre | 5 - Dialogue | Plan d'affichage, du plus haut (7 - Plein écran dialogue) au plus bas (1 - Arrière-plan) ; « Dialogue » passe devant les barres d'action et la plupart des fenêtres, descendre si la carte cache quelque chose |
 
@@ -116,6 +125,7 @@ propres à chaque personnage) :
 
 ## Version
 
+`1.3.0` : repères de BtWQuests (quêtes disponibles, objectifs suivis) et de MidnightRoutine (point de navigation).
 `1.2.0` : correction de la carte vide (cadre de bordure attendu par le moteur de Blizzard) ; plan par défaut « Dialogue » (le plus haut utilisable, réglage existant repris une fois) et sept plans au choix.
 `1.1.0` : Maj + clic gauche sur le bouton **Map** = recentrer la carte (`/poly map reset`).
 `1.0.1` : `/poly map reset` (carte recentrée) ; repères des personnages sans erreur « action bloquée » en combat.

@@ -41,6 +41,8 @@ local DEFAULTS = {
 	showWorldQuests = true, -- expéditions
 	showHereBeDragons = true, -- points TomTom (et autres addons HereBeDragons)
 	showHandyNotes = true,
+	showBtWQuests = true, -- quêtes disponibles et objectifs de BtWQuests
+	showMidnightRoutine = true, -- point de navigation de MidnightRoutine
 	ping = true, -- clic gauche = ping montré aux autres clients
 	zoom = 0, -- 0 à 1 : niveau de zoom gardé d'une carte à l'autre
 }
@@ -113,6 +115,8 @@ local FRAME_LEVELS = {
 	"PIN_FRAME_LEVEL_VEHICLE_ABOVE_GROUP_MEMBER", "PIN_FRAME_LEVEL_CORPSE", "PIN_FRAME_LEVEL_POLYPODE_PING",
 	"PIN_FRAME_LEVEL_AREA_POI_BANNER",
 }
+-- Un niveau inconnu retombe sur le niveau par défaut ; TOPMOST (MidnightRoutine) est géré par le moteur.
+table.insert(FRAME_LEVELS, 1, "PIN_FRAME_LEVEL_STORY_LINE") -- objectifs de BtWQuests, sous le reste
 
 -- Fournisseurs de Blizzard par groupe (chacun testé : WoW Forever n'a pas tout) ; l'ordre suit la
 -- carte du monde. « base » est toujours présent, les autres suivent les options.
@@ -813,6 +817,12 @@ local function BuildSettingsPanel()
 		.. "Alt + clic droit sur la carte : nouveau point TomTom.", ns.ApplyProviders)
 	AddCheck("showHandyNotes", "HandyNotes", "Notes des modules de HandyNotes, si l'addon est installé.",
 		ns.ApplyProviders)
+	AddCheck("showBtWQuests", "BtWQuests",
+		"Quêtes disponibles des chaînes de BtWQuests et objectifs des quêtes suivies, si l'addon est installé "
+		.. "(ses propres options d'affichage sur la carte restent valables). Clic sur un repère : point de navigation.",
+		ns.ApplyProviders)
+	AddCheck("showMidnightRoutine", "MidnightRoutine",
+		"Point de navigation de la routine en cours de MidnightRoutine, si l'addon est installé.", ns.ApplyProviders)
 	AddCheck("ping", "Ping au clic",
 		"Clic sur la carte : signal animé à cet endroit, montré aussi sur la carte des autres personnages "
 		.. "(qui ont Polypode Map).")

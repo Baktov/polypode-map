@@ -2,9 +2,9 @@
 ## Title: Polypode Map
 ## Notes: Petite carte de zone permanente (redimensionnable, zoomable) avec les personnages de Polypode, les quêtes, TomTom et HandyNotes. Remplace EnhanceBattlefieldMinimap, sans librairie. Commande : /poly map
 ## Author: Baktov
-## Version: 1.2.0
+## Version: 1.3.0
 ## Dependencies: Polypode
-## OptionalDeps: TomTom, HandyNotes
+## OptionalDeps: TomTom, HandyNotes, BtWQuests, MidnightRoutine
 ## SavedVariablesPerCharacter: PolypodeMapDB
 ## Category: Polypode
 

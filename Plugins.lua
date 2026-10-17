@@ -112,6 +112,103 @@ local function SetupHandyNotes()
 	end
 end
 
+-- FOURNISSEURS STANDARD D'AUTRES ADDONS ---------------------------------------------------------
+
+-- Addons qui ajoutent à la carte du monde un fournisseur standard (MapCanvasDataProviderMixin) dont
+-- le mixin est global et les modèles de repères en XML : une copie du mixin sur notre carte suffit.
+-- Rafraîchie quand notre carte change de zone (moteur), et en plus :
+--   events : événements qui changent ses données (regroupés, 1 s après le dernier) ;
+--   hook   : rafraîchissement de l'addon sur la carte du monde, répercuté sur la nôtre.
+--   * BtWQuests : quêtes disponibles de ses chaînes (BtWQuestsQuestDataProviderMixin) et objectifs
+--     des quêtes suivies (BtWQuestsQuestPOIDataProviderMixin, seulement si le jeu n'en donne pas) ;
+--     ses propres options (Afficher les repères...) restent respectées. Son fournisseur « guide »
+--     (fenêtre de BtWQuests) n'est pas repris.
+--   * MidnightRoutine : point de navigation de la routine en cours (une variable interne commune à
+--     toutes les copies du fournisseur) ; son RefreshAllData est accroché.
+local EXTERNAL = {
+	{
+		group = "btwQuests", setting = "showBtWQuests",
+		mixins = { "BtWQuestsQuestDataProviderMixin", "BtWQuestsQuestPOIDataProviderMixin" },
+		events = { "QUEST_LOG_UPDATE", "QUEST_ACCEPTED", "QUEST_TURNED_IN", "QUEST_REMOVED" },
+	},
+	{
+		group = "midnightRoutine", setting = "showMidnightRoutine",
+		mixins = { "MidnightRoutineMapWaypointDataProviderMixin" },
+		hook = true,
+	},
+}
+local EXTERNAL_REFRESH_DELAY = 1 -- secondes
+
+local externalCurrent = {} -- [groupe] = { fournisseur, ... } sur notre carte
+local externalOurs = {} -- [fournisseur] = true (les nôtres, pour ne pas reboucler par l'accroche)
+local externalPending = {}
+
+local function RefreshExternal(group, delay)
+	if externalPending[group] then
+		return
+	end
+	externalPending[group] = true
+	C_Timer.After(delay or 0, function()
+		externalPending[group] = nil
+		for _, provider in ipairs(externalCurrent[group] or {}) do
+			local map = provider:GetMap()
+			if map and map:IsVisible() then
+				pcall(provider.RefreshAllData, provider)
+			end
+		end
+	end)
+end
+
+local externalFactories = {} -- [groupe] = fabrique (addon présent)
+
+local function SetupExternal()
+	local events = CreateFrame("Frame")
+	local byEvent = {}
+	for _, spec in ipairs(EXTERNAL) do
+		local present = {}
+		for _, name in ipairs(spec.mixins) do
+			if type(_G[name]) == "table" then
+				present[#present + 1] = _G[name]
+			end
+		end
+		if #present > 0 then
+			externalFactories[spec.group] = function()
+				local list = {}
+				for _, mixin in ipairs(present) do
+					local ok, provider = pcall(CreateFromMixins, mixin)
+					if ok and provider then
+						externalOurs[provider] = true
+						list[#list + 1] = provider
+					end
+				end
+				externalCurrent[spec.group] = list
+				return list
+			end
+			for _, event in ipairs(spec.events or {}) do
+				byEvent[event] = byEvent[event] or {}
+				table.insert(byEvent[event], spec.group)
+				events:RegisterEvent(event)
+			end
+			if spec.hook then
+				for _, mixin in ipairs(present) do
+					if type(mixin.RefreshAllData) == "function" then
+						hooksecurefunc(mixin, "RefreshAllData", function(self)
+							if not externalOurs[self] then
+								RefreshExternal(spec.group)
+							end
+						end)
+					end
+				end
+			end
+		end
+	end
+	events:SetScript("OnEvent", function(_, event)
+		for _, group in ipairs(byEvent[event] or {}) do
+			RefreshExternal(group, EXTERNAL_REFRESH_DELAY)
+		end
+	end)
+end
+
 -- INITIALISATION ------------------------------------------------------------------------------
 
 -- Appelé par ns.ApplyProviders (Map.lua) : fournisseurs selon les réglages.
@@ -123,12 +220,21 @@ function ns.ApplyPluginProviders(setGroup)
 	if handyNotesFactory then
 		setGroup("handyNotes", db.showHandyNotes, handyNotesFactory)
 	end
+	for _, spec in ipairs(EXTERNAL) do
+		if externalFactories[spec.group] then
+			setGroup(spec.group, db[spec.setting], externalFactories[spec.group])
+			if not db[spec.setting] then
+				externalCurrent[spec.group] = nil
+			end
+		end
+	end
 end
 
 -- Appelé par Map.lua à la construction de la carte (avant son premier affichage).
 function ns.InitPlugins(map)
 	SetupHereBeDragons(map)
 	SetupHandyNotes()
+	SetupExternal()
 	table.insert(ns.clickHandlers, OnTomTomClick)
 	ns.ApplyProviders()
 end
