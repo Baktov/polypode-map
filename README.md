@@ -94,6 +94,7 @@ propres à chaque personnage) :
 | Afficher la carte | Oui | Comme le bouton **Map** et `/poly map` |
 | Figer la carte | Non | Ni déplacement ni redimensionnement (comme le cadenas) |
 | Suivre le joueur | Oui | Hors survol : carte de votre zone, centrée sur vous |
+| Ajuster le cadre à chaque carte | Non | À chaque changement de carte, le cadre prend les proportions de la nouvelle carte (comme le clic gauche sur l'en-tête) ; sans effet si la carte est figée |
 | En-tête toujours visible | Non | Nom de la zone et coordonnées affichés en permanence |
 | Opacité hors survol | 100 % | Carte estompée quand la souris n'est pas dessus |
 | Taille de la fenêtre | 100 % | Échelle de toute la fenêtre |
@@ -126,6 +127,7 @@ propres à chaque personnage) :
 
 ## Version
 
+`1.5.0` : option « Ajuster le cadre à chaque carte » (décochée par défaut).
 `1.4.0` : clic gauche sur l'en-tête = cadre ajusté aux proportions de la carte affichée.
 `1.3.1` : zoom à la molette fluide, centré sur le point sous le curseur (plus de recentrage ni de paliers).
 `1.3.0` : repères de BtWQuests (quêtes disponibles, objectifs suivis) et de MidnightRoutine (point de navigation).

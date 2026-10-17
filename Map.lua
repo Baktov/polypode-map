@@ -33,6 +33,7 @@ local DEFAULTS = {
 	strata = "DIALOG", -- plan le plus haut utilisable (les fenêtres d'options restent devant : Raise)
 	followPlayer = true, -- hors survol : carte du joueur, centrée sur lui
 	headerAlways = false, -- en-tête (zone, coordonnées) affiché même hors survol
+	autoFit = false, -- cadre ajusté aux proportions de chaque nouvelle carte (comme le clic sur l'en-tête)
 	pinScale = 70, -- % taille des icônes de Blizzard (quêtes, points d'intérêt...)
 	memberScale = 100, -- % taille des repères des personnages
 	showNames = true, -- nom au-dessus des repères des personnages
@@ -729,6 +730,20 @@ local function Build()
 		ns.InitPlugins(canvas)
 	end
 
+	-- Option autoFit : chaque changement de carte (zone, suivi du joueur, lien de carte) ajuste le
+	-- cadre, à l'image suivante (la carte finit de se mettre en place dans SetMapID).
+	local fitPending = false
+	hooksecurefunc(canvas, "OnMapChanged", function()
+		if not Settings_().autoFit or fitPending then
+			return
+		end
+		fitPending = true
+		C_Timer.After(0, function()
+			fitPending = false
+			ns.FitToMap()
+		end)
+	end)
+
 	ApplyLayout()
 	UpdateLockButton()
 	UpdateHover(false)
@@ -874,6 +889,15 @@ local function BuildSettingsPanel()
 		end)
 	AddCheck("followPlayer", "Suivre le joueur",
 		"Quand la souris n'est pas sur la carte : affiche la carte de votre zone, centrée sur vous.")
+	AddCheck("autoFit", "Ajuster le cadre à chaque carte",
+		"À chaque changement de carte (zone, suivi du joueur, lien de carte), le cadre prend les proportions "
+		.. "de la nouvelle carte, comme au clic gauche sur l'en-tête : largeur gardée, hauteur recalculée. "
+		.. "Sans effet si la carte est figée.",
+		function(value)
+			if value then
+				ns.FitToMap()
+			end
+		end)
 	AddCheck("headerAlways", "En-tête toujours visible",
 		"Affiche en permanence le nom de la zone et vos coordonnées en haut de la carte (sinon : au survol).",
 		ns.RefreshHover)
