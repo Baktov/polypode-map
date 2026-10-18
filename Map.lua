@@ -34,6 +34,8 @@ local DEFAULTS = {
 	followPlayer = true, -- hors survol : carte du joueur, centrée sur lui
 	headerAlways = false, -- en-tête (zone, coordonnées) affiché même hors survol
 	autoFit = false, -- cadre ajusté aux proportions de chaque nouvelle carte (comme le clic sur l'en-tête)
+	borderSize = 1, -- épaisseur du cadre autour de la carte (pixels, 0 = aucun)
+	borderColor = "black", -- couleur du cadre (BORDER_COLORS)
 	pinScale = 70, -- % taille des icônes de Blizzard (quêtes, points d'intérêt...)
 	memberScale = 100, -- % taille des repères des personnages
 	showNames = true, -- nom au-dessus des repères des personnages
@@ -444,8 +446,50 @@ local function SavePosition()
 	db.width, db.height = frame:GetSize()
 end
 
+-- Couleurs du cadre : { valeur, libellé, r, g, b } ; "class" = couleur de classe du personnage joué.
+local BORDER_COLORS = {
+	{ "black", "Noir", 0, 0, 0 }, { "grey", "Gris", 0.5, 0.5, 0.5 }, { "white", "Blanc", 1, 1, 1 },
+	{ "gold", "Doré", 1, 0.82, 0 }, { "blue", "Bleu", 0.3, 0.65, 1 }, { "class", "Couleur de classe" },
+}
+
+local function BorderColor()
+	local value = Settings_().borderColor
+	if value == "class" then
+		local _, class = UnitClass("player")
+		local color = class and (C_ClassColor and C_ClassColor.GetClassColor(class) or RAID_CLASS_COLORS[class])
+		if color then
+			return color.r, color.g, color.b
+		end
+	end
+	for _, choice in ipairs(BORDER_COLORS) do
+		if choice[1] == value and choice[3] then
+			return choice[3], choice[4], choice[5]
+		end
+	end
+	return 0, 0, 0
+end
+
+-- Cadre de la carte : bordure de borderSize pixels (0 = aucune) ; carte, en-tête et poignée
+-- posés à l'intérieur.
+local function ApplyBorder()
+	local size = Settings_().borderSize or 1
+	frame:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8",
+		edgeFile = size > 0 and "Interface\\Buttons\\WHITE8x8" or nil, edgeSize = size })
+	frame:SetBackdropColor(0, 0, 0, 0.6)
+	frame:SetBackdropBorderColor(BorderColor())
+	canvas:ClearAllPoints()
+	canvas:SetPoint("TOPLEFT", size, -size)
+	canvas:SetPoint("BOTTOMRIGHT", -size, size)
+	header:ClearAllPoints()
+	header:SetPoint("TOPLEFT", size, -size)
+	header:SetPoint("TOPRIGHT", -size, -size)
+	grip:ClearAllPoints()
+	grip:SetPoint("BOTTOMRIGHT", -size, size)
+end
+
 local function ApplyLayout()
 	local db = Settings_()
+	ApplyBorder()
 	frame:SetScale(db.scale / 100)
 	frame:SetSize(Clamp(db.width, MIN_WIDTH, MAX_WIDTH), Clamp(db.height, MIN_HEIGHT, MAX_HEIGHT))
 	frame:ClearAllPoints()
@@ -573,9 +617,7 @@ local function Build()
 	if frame.SetResizeBounds then
 		frame:SetResizeBounds(MIN_WIDTH, MIN_HEIGHT, MAX_WIDTH, MAX_HEIGHT)
 	end
-	frame:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
-	frame:SetBackdropColor(0, 0, 0, 0.6)
-	frame:SetBackdropBorderColor(0, 0, 0, 1)
+	-- Cadre (bordure) posé par ApplyBorder, depuis ApplyLayout.
 
 	canvas = CreateCanvas(frame)
 	canvas:SetPoint("TOPLEFT", 1, -1)
@@ -764,7 +806,7 @@ function ns.FitToMap()
 		return
 	end
 	local ratio = layer.layerHeight / layer.layerWidth
-	local border = 2 -- 1 pixel de bordure de chaque côté
+	local border = 2 * (Settings_().borderSize or 1) -- cadre des deux côtés
 	local width = frame:GetWidth()
 	local height = (width - border) * ratio + border
 	if height < MIN_HEIGHT or height > MAX_HEIGHT then
@@ -852,16 +894,18 @@ local function BuildSettingsPanel()
 	local function PercentText(value)
 		return string.format("%d %%", value)
 	end
-	local function AddSlider(field, label, min, max, step, tooltip, onChange)
+	-- formatter : texte de la valeur (pourcentage par défaut).
+	local function AddSlider(field, label, min, max, step, tooltip, onChange, formatter)
+		formatter = formatter or PercentText
 		local setting = Register(field, Settings.VarType.Number, label, onChange)
 		tooltip = Color(tooltip)
 		local options = Settings.CreateSliderOptions(min, max, step)
 		if MinimalSliderWithSteppersMixin then
-			options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, PercentText)
+			options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, formatter)
 		end
 		Settings.CreateSlider(category, setting, options, tooltip)
 		popupItems[#popupItems + 1] = { kind = "slider", setting = setting, min = min, max = max, step = step,
-			format = PercentText, tooltip = tooltip }
+			format = formatter, tooltip = tooltip }
 	end
 	local function AddDropdown(field, label, values, tooltip, onChange)
 		local setting = Register(field, Settings.VarType.String, label, onChange)
@@ -905,6 +949,17 @@ local function BuildSettingsPanel()
 		"Opacité de la carte quand la souris n'est pas dessus (100 % = opaque).", ns.RefreshHover)
 	AddSlider("scale", "Taille de la fenêtre", 50, 200, 5,
 		"Échelle de toute la fenêtre de la carte.", ns.ApplyLayout)
+	AddSlider("borderSize", "Épaisseur du cadre", 0, 10, 1,
+		"Cadre autour de la carte, en pixels (0 = aucun, 1 = fin trait noir par défaut).", ns.ApplyLayout,
+		function(value)
+			return string.format("%d px", value)
+		end)
+	local borderValues = {}
+	for _, choice in ipairs(BORDER_COLORS) do
+		borderValues[#borderValues + 1] = { choice[1], choice[2] }
+	end
+	AddDropdown("borderColor", "Couleur du cadre", borderValues,
+		"Couleur du cadre autour de la carte (avec une épaisseur d'au moins 1 pixel).", ns.ApplyLayout)
 	AddSlider("pinScale", "Taille des icônes", 30, 150, 5,
 		"Taille des icônes de Blizzard sur la carte (quêtes, points d'intérêt, maîtres de vol...).",
 		ns.ApplyLayout)

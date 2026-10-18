@@ -96,6 +96,8 @@ propres à chaque personnage) :
 | Suivre le joueur | Oui | Hors survol : carte de votre zone, centrée sur vous |
 | Ajuster le cadre à chaque carte | Non | À chaque changement de carte, le cadre prend les proportions de la nouvelle carte (comme le clic gauche sur l'en-tête) ; sans effet si la carte est figée |
 | En-tête toujours visible | Non | Nom de la zone et coordonnées affichés en permanence |
+| Épaisseur du cadre | 1 px | Cadre autour de la carte, de 0 (aucun) à 10 pixels |
+| Couleur du cadre | Noir | Noir, gris, blanc, doré, bleu ou couleur de classe du personnage joué |
 | Opacité hors survol | 100 % | Carte estompée quand la souris n'est pas dessus |
 | Taille de la fenêtre | 100 % | Échelle de toute la fenêtre |
 | Taille des icônes | 70 % | Icônes de Blizzard (quêtes, points d'intérêt...) |
@@ -127,6 +129,7 @@ propres à chaque personnage) :
 
 ## Version
 
+`1.6.0` : options « Épaisseur du cadre » (0 à 10 px) et « Couleur du cadre ».
 `1.5.0` : option « Ajuster le cadre à chaque carte » (décochée par défaut).
 `1.4.0` : clic gauche sur l'en-tête = cadre ajusté aux proportions de la carte affichée.
 `1.3.1` : zoom à la molette fluide, centré sur le point sous le curseur (plus de recentrage ni de paliers).
