@@ -15,7 +15,7 @@ Nécessite **Polypode 2.5.0** ou plus récent.
 
 1. Installer d'abord **Polypode** (dépendance obligatoire).
 2. Placer le dossier `Polypode_Map` dans `World of Warcraft/_retail_/Interface/AddOns/`
-   (et, pour **WoW Forever**, dans `World of Warcraft/_classic_beta_/Interface/AddOns/`, par
+   (et, pour **WoW Forever**, dans `World of Warcraft/_forever_/Interface/AddOns/`, par
    exemple par une jonction `mklink /J`).
 3. Cocher « Polypode Map » dans la liste des AddOns **sur chaque personnage** : chacun envoie sa
    position aux autres.
