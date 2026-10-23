@@ -142,6 +142,7 @@ other language).*
 
 ## Version
 
+`1.7.1` : italien, « Missioni mondiali » pour les expéditions.
 `1.7.0` : Polypode Map en anglais, allemand, espagnol, italien et portugais du Brésil, selon la langue choisie dans Polypode (Karte, Mapa, Mappa...). *Translated into English, German, Spanish, Italian and Brazilian Portuguese.*
 `1.6.0` : options « Épaisseur du cadre » (0 à 10 px) et « Couleur du cadre ».
 `1.5.0` : option « Ajuster le cadre à chaque carte » (décochée par défaut).
