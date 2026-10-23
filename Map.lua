@@ -2,6 +2,7 @@
 
 local ADDON_NAME, ns = ...
 local P = Polypode -- dépendance obligatoire (## Dependencies: Polypode), chargée avant nous
+local L = ns.L
 
 -- La carte est une instance du moteur commun aux cartes de Blizzard (MapCanvasMixin, celui de la
 -- carte du monde et de la carte de zone Maj + M), construite par l'addon sans toucher aux cadres de
@@ -446,10 +447,11 @@ local function SavePosition()
 	db.width, db.height = frame:GetSize()
 end
 
--- Couleurs du cadre : { valeur, libellé, r, g, b } ; "class" = couleur de classe du personnage joué.
+-- Couleurs du cadre : { valeur, r, g, b } ; "class" = couleur de classe du personnage joué. Libellés
+-- (traduits) dans BuildSettingsPanel.
 local BORDER_COLORS = {
-	{ "black", "Noir", 0, 0, 0 }, { "grey", "Gris", 0.5, 0.5, 0.5 }, { "white", "Blanc", 1, 1, 1 },
-	{ "gold", "Doré", 1, 0.82, 0 }, { "blue", "Bleu", 0.3, 0.65, 1 }, { "class", "Couleur de classe" },
+	{ "black", 0, 0, 0 }, { "grey", 0.5, 0.5, 0.5 }, { "white", 1, 1, 1 },
+	{ "gold", 1, 0.82, 0 }, { "blue", 0.3, 0.65, 1 }, { "class" },
 }
 
 local function BorderColor()
@@ -462,8 +464,8 @@ local function BorderColor()
 		end
 	end
 	for _, choice in ipairs(BORDER_COLORS) do
-		if choice[1] == value and choice[3] then
-			return choice[3], choice[4], choice[5]
+		if choice[1] == value and choice[2] then
+			return choice[2], choice[3], choice[4]
 		end
 	end
 	return 0, 0, 0
@@ -589,17 +591,17 @@ end
 
 local function ShowHeaderTooltip(owner)
 	GameTooltip:SetOwner(owner, "ANCHOR_TOP")
-	GameTooltip:AddLine("Polypode Map")
-	GameTooltip:AddLine("Glisser l'en-tête : déplacer la carte (sauf si elle est figée)", 1, 1, 1, true)
-	GameTooltip:AddLine("Clic gauche sur l'en-tête : ajuster le cadre aux proportions de la carte affichée",
+	GameTooltip:AddLine(L["Polypode Map"])
+	GameTooltip:AddLine(L["Glisser l'en-tête : déplacer la carte (sauf si elle est figée)"], 1, 1, 1, true)
+	GameTooltip:AddLine(L["Clic gauche sur l'en-tête : ajuster le cadre aux proportions de la carte affichée"],
 		1, 1, 1, true)
-	GameTooltip:AddLine("Clic droit sur l'en-tête : options", 1, 1, 1, true)
-	GameTooltip:AddLine("Molette : zoom ; glisser sur la carte : déplacer la vue", 1, 1, 1, true)
+	GameTooltip:AddLine(L["Clic droit sur l'en-tête : options"], 1, 1, 1, true)
+	GameTooltip:AddLine(L["Molette : zoom ; glisser sur la carte : déplacer la vue"], 1, 1, 1, true)
 	if Settings_().ping then
-		GameTooltip:AddLine("Clic sur la carte : ping montré aux autres personnages", 1, 1, 1, true)
+		GameTooltip:AddLine(L["Clic sur la carte : ping montré aux autres personnages"], 1, 1, 1, true)
 	end
 	if TomTom and TomTom.AddWaypoint then
-		GameTooltip:AddLine("Alt + clic droit sur la carte : point TomTom", 1, 1, 1, true)
+		GameTooltip:AddLine(L["Alt + clic droit sur la carte : point TomTom"], 1, 1, 1, true)
 	end
 	if P.ShowTooltip then
 		P.ShowTooltip()
@@ -675,8 +677,8 @@ local function Build()
 	end)
 	lockButton:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_TOP")
-		GameTooltip:AddLine(Settings_().locked and "Carte figée" or "Carte libre")
-		GameTooltip:AddLine("Clic : figer / libérer (déplacement et taille)", 1, 1, 1, true)
+		GameTooltip:AddLine(Settings_().locked and L["Carte figée"] or L["Carte libre"])
+		GameTooltip:AddLine(L["Clic : figer / libérer (déplacement et taille)"], 1, 1, 1, true)
 		if P.ShowTooltip then
 			P.ShowTooltip()
 		else
@@ -863,9 +865,9 @@ local function BuildSettingsPanel()
 	end
 	local category
 	if P.optionsCategory and Settings.RegisterVerticalLayoutSubcategory then
-		category = Settings.RegisterVerticalLayoutSubcategory(P.optionsCategory, "Map")
+		category = Settings.RegisterVerticalLayoutSubcategory(P.optionsCategory, L["Map"])
 	else
-		category = Settings.RegisterVerticalLayoutCategory("Polypode Map")
+		category = Settings.RegisterVerticalLayoutCategory(L["Polypode Map"])
 	end
 	-- Chaque réglage est aussi rappelé dans la petite fenêtre du clic droit (P.ToggleOptionsPopup).
 	local popupItems = {}
@@ -920,102 +922,107 @@ local function BuildSettingsPanel()
 		popupItems[#popupItems + 1] = { kind = "dropdown", setting = setting, values = values, tooltip = tooltip }
 	end
 
-	AddCheck("shown", "Afficher la carte",
-		"Petite carte de zone permanente. Même effet que le bouton « Map » de Polypode et /poly map.",
+	AddCheck("shown", L["Afficher la carte"],
+		L["Petite carte de zone permanente. Même effet que le bouton « Map » de Polypode et /poly map."],
 		function(value)
 			P.ToggleMap(value)
 		end)
-	AddCheck("locked", "Figer la carte",
-		"Empêche de déplacer (glisser l'en-tête) et de redimensionner (poignée bas-droite) la carte. "
-		.. "Même effet que le cadenas de l'en-tête.",
+	AddCheck("locked", L["Figer la carte"],
+		L["Empêche de déplacer (glisser l'en-tête) et de redimensionner (poignée bas-droite) la carte. "
+		.. "Même effet que le cadenas de l'en-tête."],
 		function(value)
 			ns.SetLocked(value)
 		end)
-	AddCheck("followPlayer", "Suivre le joueur",
-		"Quand la souris n'est pas sur la carte : affiche la carte de votre zone, centrée sur vous.")
-	AddCheck("autoFit", "Ajuster le cadre à chaque carte",
-		"À chaque changement de carte (zone, suivi du joueur, lien de carte), le cadre prend les proportions "
+	AddCheck("followPlayer", L["Suivre le joueur"],
+		L["Quand la souris n'est pas sur la carte : affiche la carte de votre zone, centrée sur vous."])
+	AddCheck("autoFit", L["Ajuster le cadre à chaque carte"],
+		L["À chaque changement de carte (zone, suivi du joueur, lien de carte), le cadre prend les proportions "
 		.. "de la nouvelle carte, comme au clic gauche sur l'en-tête : largeur gardée, hauteur recalculée. "
-		.. "Sans effet si la carte est figée.",
+		.. "Sans effet si la carte est figée."],
 		function(value)
 			if value then
 				ns.FitToMap()
 			end
 		end)
-	AddCheck("headerAlways", "En-tête toujours visible",
-		"Affiche en permanence le nom de la zone et vos coordonnées en haut de la carte (sinon : au survol).",
+	AddCheck("headerAlways", L["En-tête toujours visible"],
+		L["Affiche en permanence le nom de la zone et vos coordonnées en haut de la carte (sinon : au survol)."],
 		ns.RefreshHover)
-	AddSlider("opacity", "Opacité hors survol", 10, 100, 5,
-		"Opacité de la carte quand la souris n'est pas dessus (100 % = opaque).", ns.RefreshHover)
-	AddSlider("scale", "Taille de la fenêtre", 50, 200, 5,
-		"Échelle de toute la fenêtre de la carte.", ns.ApplyLayout)
-	AddSlider("borderSize", "Épaisseur du cadre", 0, 10, 1,
-		"Cadre autour de la carte, en pixels (0 = aucun, 1 = fin trait noir par défaut).", ns.ApplyLayout,
+	AddSlider("opacity", L["Opacité hors survol"], 10, 100, 5,
+		L["Opacité de la carte quand la souris n'est pas dessus (100 % = opaque)."], ns.RefreshHover)
+	AddSlider("scale", L["Taille de la fenêtre"], 50, 200, 5,
+		L["Échelle de toute la fenêtre de la carte."], ns.ApplyLayout)
+	AddSlider("borderSize", L["Épaisseur du cadre"], 0, 10, 1,
+		L["Cadre autour de la carte, en pixels (0 = aucun, 1 = fin trait noir par défaut)."], ns.ApplyLayout,
 		function(value)
-			return string.format("%d px", value)
+			return L["%d px"]:format(value)
 		end)
+	local borderLabels = { black = L["Noir"], grey = L["Gris"], white = L["Blanc"], gold = L["Doré"], blue = L["Bleu"],
+		class = L["Couleur de classe"] }
 	local borderValues = {}
 	for _, choice in ipairs(BORDER_COLORS) do
-		borderValues[#borderValues + 1] = { choice[1], choice[2] }
+		borderValues[#borderValues + 1] = { choice[1], borderLabels[choice[1]] }
 	end
-	AddDropdown("borderColor", "Couleur du cadre", borderValues,
-		"Couleur du cadre autour de la carte (avec une épaisseur d'au moins 1 pixel).", ns.ApplyLayout)
-	AddSlider("pinScale", "Taille des icônes", 30, 150, 5,
-		"Taille des icônes de Blizzard sur la carte (quêtes, points d'intérêt, maîtres de vol...).",
+	AddDropdown("borderColor", L["Couleur du cadre"], borderValues,
+		L["Couleur du cadre autour de la carte (avec une épaisseur d'au moins 1 pixel)."], ns.ApplyLayout)
+	AddSlider("pinScale", L["Taille des icônes"], 30, 150, 5,
+		L["Taille des icônes de Blizzard sur la carte (quêtes, points d'intérêt, maîtres de vol...)."],
 		ns.ApplyLayout)
-	AddSlider("memberScale", "Taille des personnages", 50, 250, 10,
-		"Taille de votre flèche, des points du groupe et des repères des personnages de Polypode.",
+	AddSlider("memberScale", L["Taille des personnages"], 50, 250, 10,
+		L["Taille de votre flèche, des points du groupe et des repères des personnages de Polypode."],
 		ns.ApplyMemberScale)
-	AddCheck("showNames", "Noms des personnages",
-		"Affiche le nom de chaque personnage de Polypode au-dessus de son repère.",
+	AddCheck("showNames", L["Noms des personnages"],
+		L["Affiche le nom de chaque personnage de Polypode au-dessus de son repère."],
 		function()
 			if ns.RefreshMembers then
 				ns.RefreshMembers()
 			end
 		end)
-	AddCheck("showAll", "Tous les personnages",
-		"Montre tous les personnages du roster de Polypode, et non seulement ceux de l'équipe sélectionnée.",
+	AddCheck("showAll", L["Tous les personnages"],
+		L["Montre tous les personnages du roster de Polypode, et non seulement ceux de l'équipe sélectionnée."],
 		function()
 			if ns.RefreshMembers then
 				ns.RefreshMembers()
 			end
 		end)
-	AddCheck("showQuests", "Quêtes",
-		"Quêtes en cours, quêtes disponibles, objectifs bonus et contenu suivi.", ns.ApplyProviders)
-	AddCheck("showWorldQuests", "Expéditions", "Expéditions (quêtes mondiales) de la zone.", ns.ApplyProviders)
-	AddCheck("showHereBeDragons", "Points TomTom",
-		"Points de TomTom (et des autres addons qui passent par HereBeDragons) sur la carte. "
-		.. "Alt + clic droit sur la carte : nouveau point TomTom.", ns.ApplyProviders)
-	AddCheck("showHandyNotes", "HandyNotes", "Notes des modules de HandyNotes, si l'addon est installé.",
+	AddCheck("showQuests", L["Quêtes"],
+		L["Quêtes en cours, quêtes disponibles, objectifs bonus et contenu suivi."], ns.ApplyProviders)
+	AddCheck("showWorldQuests", L["Expéditions"], L["Expéditions (quêtes mondiales) de la zone."], ns.ApplyProviders)
+	AddCheck("showHereBeDragons", L["Points TomTom"],
+		L["Points de TomTom (et des autres addons qui passent par HereBeDragons) sur la carte. "
+		.. "Alt + clic droit sur la carte : nouveau point TomTom."], ns.ApplyProviders)
+	AddCheck("showHandyNotes", "HandyNotes", L["Notes des modules de HandyNotes, si l'addon est installé."],
 		ns.ApplyProviders)
 	AddCheck("showBtWQuests", "BtWQuests",
-		"Quêtes disponibles des chaînes de BtWQuests et objectifs des quêtes suivies, si l'addon est installé "
-		.. "(ses propres options d'affichage sur la carte restent valables). Clic sur un repère : point de navigation.",
+		L["Quêtes disponibles des chaînes de BtWQuests et objectifs des quêtes suivies, si l'addon est installé "
+		.. "(ses propres options d'affichage sur la carte restent valables). Clic sur un repère : point de navigation."],
 		ns.ApplyProviders)
 	AddCheck("showMidnightRoutine", "MidnightRoutine",
-		"Point de navigation de la routine en cours de MidnightRoutine, si l'addon est installé.", ns.ApplyProviders)
-	AddCheck("ping", "Ping au clic",
-		"Clic sur la carte : signal animé à cet endroit, montré aussi sur la carte des autres personnages "
-		.. "(qui ont Polypode Map).")
-	AddDropdown("strata", "Plan de la fenêtre", {
-		{ "FULLSCREEN_DIALOG", "7 - Plein écran (dialogue)" }, { "FULLSCREEN", "6 - Plein écran" },
-		{ "DIALOG", "5 - Dialogue (défaut)" }, { "HIGH", "4 - Haut" }, { "MEDIUM", "3 - Moyen" },
-		{ "LOW", "2 - Bas" }, { "BACKGROUND", "1 - Arrière-plan" },
-	}, "Plan d'affichage de la carte par rapport au reste de l'interface, du plus haut (7) au plus bas (1). "
+		L["Point de navigation de la routine en cours de MidnightRoutine, si l'addon est installé."], ns.ApplyProviders)
+	AddCheck("ping", L["Ping au clic"],
+		L["Clic sur la carte : signal animé à cet endroit, montré aussi sur la carte des autres personnages "
+		.. "(qui ont Polypode Map)."])
+	AddDropdown("strata", L["Plan de la fenêtre"], {
+		{ "FULLSCREEN_DIALOG", L["7 - Plein écran (dialogue)"] }, { "FULLSCREEN", L["6 - Plein écran"] },
+		{ "DIALOG", L["5 - Dialogue (défaut)"] }, { "HIGH", L["4 - Haut"] }, { "MEDIUM", L["3 - Moyen"] },
+		{ "LOW", L["2 - Bas"] }, { "BACKGROUND", L["1 - Arrière-plan"] },
+	}, L["Plan d'affichage de la carte par rapport au reste de l'interface, du plus haut (7) au plus bas (1). "
 		.. "Par défaut « Dialogue » : devant les barres d'action et la plupart des fenêtres ; descendre si la "
-		.. "carte cache quelque chose. Au-dessus de « Dialogue », elle peut passer devant les menus.",
+		.. "carte cache quelque chose. Au-dessus de « Dialogue », elle peut passer devant les menus."],
 		ns.ApplyLayout)
 
 	Settings.RegisterAddOnCategory(category)
 	ns.settingsCategory = category
-	ns.settingsPopup = { key = "Map", title = "Options de la carte", items = popupItems, category = category }
+	ns.settingsPopup = { key = "Map", title = L["Options de la carte"], items = popupItems, category = category }
 end
 
 -- INTÉGRATION À POLYPODE ----------------------------------------------------------------------
 
-if P.AddTitleButton then
+ns.OnLanguageApplied(function()
+	if not P.AddTitleButton then
+		return
+	end
 	P.AddTitleButton({
-		text = "Map",
+		text = L["Map"],
 		width = 50,
 		rightClick = true,
 		onClick = function(button, mouseButton)
@@ -1028,16 +1035,16 @@ if P.AddTitleButton then
 			end
 		end,
 		tooltip = {
-			"Polypode Map",
-			"Clic gauche : afficher / masquer la petite carte de zone (personnages de l'équipe, quêtes, TomTom).",
-			"Maj + clic gauche : recentrer la carte (position, taille et plan par défaut), comme /poly map reset",
-			"Clic droit : options de la carte",
+			L["Polypode Map"],
+			L["Clic gauche : afficher / masquer la petite carte de zone (personnages de l'équipe, quêtes, TomTom)."],
+			L["Maj + clic gauche : recentrer la carte (position, taille et plan par défaut), comme /poly map reset"],
+			L["Clic droit : options de la carte"],
 		},
 		onCreate = function(button)
 			P.ui.mapButton = button
 		end,
 	})
-end
+end)
 
 -- Carte remise au centre de l'écran, à sa taille et à son plan par défaut, et affichée.
 function ns.ResetMap()
@@ -1061,10 +1068,12 @@ local function SlashMap(args)
 	end
 end
 
-if P.RegisterSlashCommand then
-	P.RegisterSlashCommand("map", SlashMap, "afficher / masquer la petite carte de zone (map reset : la recentrer)")
-	P.RegisterSlashCommand("carte", SlashMap) -- alias
-end
+ns.OnLanguageApplied(function()
+	if P.RegisterSlashCommand then
+		P.RegisterSlashCommand("map", SlashMap, L["afficher / masquer la petite carte de zone (map reset : la recentrer)"])
+		P.RegisterSlashCommand("carte", SlashMap) -- alias
+	end
+end)
 
 -- Équipe sélectionnée, roster changés : les repères suivent.
 if P.RefreshUI then

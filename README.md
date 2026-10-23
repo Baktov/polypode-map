@@ -127,8 +127,22 @@ propres à chaque personnage) :
 
 ---
 
+## Langues (Languages)
+
+Polypode Map s'affiche dans la langue choisie dans Polypode (option « Langue / Language », `/poly langue`),
+par défaut celle du jeu : français, anglais, allemand, espagnol, italien ou portugais du Brésil
+(anglais pour une autre langue). Nécessite Polypode 2.9 pour choisir la langue ; avec un Polypode plus
+ancien, le module reste en français. La commande `C:/Program Files/Git/poly map` garde son nom.
+
+*Polypode Map follows the language chosen in Polypode ("Langue / Language" option, `/poly language`), by
+default the game's: French, English, German, Spanish, Italian or Brazilian Portuguese (English for any
+other language).*
+
+---
+
 ## Version
 
+`1.7.0` : Polypode Map en anglais, allemand, espagnol, italien et portugais du Brésil, selon la langue choisie dans Polypode (Karte, Mapa, Mappa...). *Translated into English, German, Spanish, Italian and Brazilian Portuguese.*
 `1.6.0` : options « Épaisseur du cadre » (0 à 10 px) et « Couleur du cadre ».
 `1.5.0` : option « Ajuster le cadre à chaque carte » (décochée par défaut).
 `1.4.0` : clic gauche sur l'en-tête = cadre ajusté aux proportions de la carte affichée.

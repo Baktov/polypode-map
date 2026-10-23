@@ -2,6 +2,7 @@
 
 local _, ns = ...
 local P = Polypode
+local L = ns.L
 
 -- Repère de chaque personnage de l'équipe sélectionnée (ou de tout le roster, option showAll),
 -- soi excepté (flèche de Blizzard) : point en couleur de classe, nom au-dessus, couronne du leader.
@@ -203,9 +204,9 @@ end
 
 local function FormatAge(seconds)
 	if seconds < 60 then
-		return string.format("%d s", seconds)
+		return L["%d s"]:format(seconds)
 	end
-	return string.format("%d min", seconds / 60)
+	return L["%d min"]:format(seconds / 60)
 end
 
 local MemberPinMixin = CreateFromMixins(MapCanvasPinMixin)
@@ -281,13 +282,13 @@ function MemberPinMixin:OnMouseEnter()
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	GameTooltip:AddLine(P.GetDisplayName and P.GetDisplayName(key, true) or key, ClassColor(key))
 	if key == SelectedLeader() then
-		GameTooltip:AddLine("Leader de l'équipe", 1, 0.82, 0)
+		GameTooltip:AddLine(L["Leader de l'équipe"], 1, 0.82, 0)
 	end
 	local _, _, source, age = MemberMapPosition(key, self:GetMap():GetMapID())
 	if source == "live" then
-		GameTooltip:AddLine("Dans votre groupe : position en direct", 1, 1, 1)
+		GameTooltip:AddLine(L["Dans votre groupe : position en direct"], 1, 1, 1)
 	elseif source == "sync" then
-		GameTooltip:AddLine("Position reçue il y a " .. FormatAge(age), 1, 1, 1)
+		GameTooltip:AddLine(L["Position reçue il y a %s"]:format(FormatAge(age)), 1, 1, 1)
 	end
 	local status = P.GetCharacterStatus and P.GetCharacterStatus(key)
 	if status and status.zone and status.zone ~= "" then
@@ -533,9 +534,12 @@ if P.RegisterMessageHandler then
 end
 
 -- Personnage supprimé dans Polypode : sa position est oubliée.
-if P.RegisterCharacterData then
+ns.OnLanguageApplied(function()
+	if not P.RegisterCharacterData then
+		return
+	end
 	P.RegisterCharacterData({
-		name = "Polypode Map",
+		name = L["Polypode Map"],
 		describe = function()
 			return nil -- position gardée en mémoire seulement (session) : rien à signaler
 		end,
@@ -544,7 +548,7 @@ if P.RegisterCharacterData then
 			ns.RefreshMembers()
 		end,
 	})
-end
+end)
 
 -- Envoi de sa position, que la carte soit affichée ou non (les autres en ont besoin).
 C_Timer.NewTicker(SEND_TICK, function()
