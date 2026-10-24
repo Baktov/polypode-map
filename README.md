@@ -1,5 +1,7 @@
 # Polypode Map
 
+*English version: [README.en.md](README.en.md)*
+
 Petite carte de zone **permanente** (redimensionnable, zoomable, estompable) qui montre où sont
 les **personnages de votre équipe Polypode**, même hors du groupe, avec les quêtes, les points
 d'intérêt, les points TomTom et les notes HandyNotes. Elle remplace **EnhanceBattlefieldMinimap**
@@ -8,6 +10,11 @@ et la librairie Scorpio, sans aucune librairie. Addon compagnon de
 de WoW, par personnage.
 
 Nécessite **Polypode 2.5.0** ou plus récent.
+
+> **Langues** : français, anglais, allemand, espagnol, italien et portugais du Brésil, selon la
+> langue choisie dans Polypode (option « Langue / Language »). Les traductions ont été faites avec
+> l'aide de Claude, l'IA d'Anthropic : les retours de joueurs dont c'est la langue maternelle sont
+> les bienvenus ([issue GitHub](https://github.com/Baktov/polypode-map/issues)).
 
 ---
 
@@ -132,7 +139,7 @@ propres à chaque personnage) :
 Polypode Map s'affiche dans la langue choisie dans Polypode (option « Langue / Language », `/poly langue`),
 par défaut celle du jeu : français, anglais, allemand, espagnol, italien ou portugais du Brésil
 (anglais pour une autre langue). Nécessite Polypode 2.9 pour choisir la langue ; avec un Polypode plus
-ancien, le module reste en français. La commande `C:/Program Files/Git/poly map` garde son nom.
+ancien, le module reste en français. La commande `/poly map` garde son nom.
 
 *Polypode Map follows the language chosen in Polypode ("Langue / Language" option, `/poly language`), by
 default the game's: French, English, German, Spanish, Italian or Brazilian Portuguese (English for any
