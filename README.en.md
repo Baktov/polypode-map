@@ -42,6 +42,7 @@ left-click** on the button (Polypode window or module column of the floating bar
 | Hover | Header (zone name, cursor coordinates), size grip, opaque map |
 | Drag the header | Move the map |
 | Left-click the header | Fit the frame to the proportions of the shown map (width kept, height recomputed; no effect if the map is locked) |
+| Double-click the header | Back to the default size (300 × 220; no effect if the map is locked) |
 | Bottom-right grip | Resize the map |
 | Header padlock | Lock / unlock the map (no moving or resizing) |
 | Mouse wheel | Smooth zoom (×1.2 per notch) toward the point under the cursor, deeper than Blizzard's map, kept from one zone to the next |

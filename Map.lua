@@ -658,6 +658,18 @@ local function Build()
 		self.dragged = false
 	end)
 	header:SetScript("OnEnter", ShowHeaderTooltip)
+	-- Double-clic sur l'en-tête : taille par défaut, sauf fenêtre figée (Polypode 2.12). Le premier
+	-- clic a déjà ajusté le cadre à la carte (ns.FitToMap) ; le second remet la taille par défaut, et
+	-- son relâchement n'est pas un clic (dragged, comme après un glisser).
+	if P.EnableTitleDoubleClick then
+		P.EnableTitleDoubleClick(header, function()
+			header.dragged = true
+			if not Settings_().locked then
+				frame:SetSize(DEFAULTS.width, DEFAULTS.height)
+				SavePosition()
+			end
+		end, HEADER_HEIGHT)
+	end
 	header:SetScript("OnLeave", function()
 		GameTooltip:Hide()
 	end)

@@ -43,6 +43,7 @@ flottante) : même effet que `/poly map reset`.
 | Survol | En-tête (nom de la zone, coordonnées du curseur), poignée de taille, carte opaque |
 | Glisser l'en-tête | Déplacer la carte |
 | Clic gauche sur l'en-tête | Ajuster le cadre aux proportions de la carte affichée (largeur gardée, hauteur recalculée ; sans effet si la carte est figée) |
+| Double-clic sur l'en-tête | Revenir à la taille par défaut (300 × 220 ; sans effet si la carte est figée) |
 | Poignée bas-droite | Redimensionner la carte |
 | Cadenas de l'en-tête | Figer / libérer la carte (ni déplacement ni redimensionnement) |
 | Molette | Zoom fluide (×1,2 par cran) vers le point sous le curseur, plus profond que la carte de Blizzard, gardé d'une zone à l'autre |
@@ -149,6 +150,7 @@ other language).*
 
 ## Version
 
+`1.8.0` : double-clic sur l'en-tête : retour à la taille par défaut (300 × 220 ; sans effet si la carte est figée ; Polypode 2.12).
 `1.7.2` : chemins des fichiers de langue compatibles macOS.
 `1.7.1` : italien, « Missioni mondiali » pour les expéditions.
 `1.7.0` : Polypode Map en anglais, allemand, espagnol, italien et portugais du Brésil, selon la langue choisie dans Polypode (Karte, Mapa, Mappa...). *Translated into English, German, Spanish, Italian and Brazilian Portuguese.*
