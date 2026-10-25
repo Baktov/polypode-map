@@ -717,10 +717,25 @@ local function Build()
 	grip:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
 	grip:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
 	grip:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+	-- Pendant le redimensionnement, le coin haut-gauche reste fixe (ancre TOPLEFT, gardée par
+	-- SavePosition) et la taille ne dépasse pas la place jusqu'aux bords de l'écran (unités de la
+	-- fenêtre, qui a sa propre échelle) : la carte étant retenue dans l'écran, le jeu la repousserait
+	-- et elle s'agrandirait d'un coup (comme Polypode Histoire 1.14.1). Départ depuis la souris.
 	grip:SetScript("OnMouseDown", function()
-		if not Settings_().locked then
-			frame:StartSizing("BOTTOMRIGHT")
+		if Settings_().locked then
+			return
 		end
+		local left, top = frame:GetLeft(), frame:GetTop()
+		if left and top then
+			local right = UIParent:GetRight() * UIParent:GetEffectiveScale() / frame:GetEffectiveScale()
+			frame:ClearAllPoints()
+			frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, top)
+			if frame.SetResizeBounds then
+				frame:SetResizeBounds(MIN_WIDTH, MIN_HEIGHT, Clamp(right - left, MIN_WIDTH, MAX_WIDTH),
+					Clamp(top, MIN_HEIGHT, MAX_HEIGHT))
+			end
+		end
+		frame:StartSizing("BOTTOMRIGHT", true)
 	end)
 	grip:SetScript("OnMouseUp", function()
 		frame:StopMovingOrSizing()

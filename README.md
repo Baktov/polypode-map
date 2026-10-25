@@ -150,6 +150,7 @@ other language).*
 
 ## Version
 
+`1.8.1` : redimensionnement par la poignée du coin corrigé (plus d'agrandissement d'un coup hors de l'écran ; coin haut-gauche fixe, taille bornée à l'écran).
 `1.8.0` : double-clic sur l'en-tête : retour à la taille par défaut (300 × 220 ; sans effet si la carte est figée ; Polypode 2.12).
 `1.7.2` : chemins des fichiers de langue compatibles macOS.
 `1.7.1` : italien, « Missioni mondiali » pour les expéditions.

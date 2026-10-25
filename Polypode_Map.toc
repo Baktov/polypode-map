@@ -8,7 +8,7 @@
 ## Notes: Small permanent zone map (resizable, zoomable) with the Polypode characters, quests, TomTom and HandyNotes. Replaces EnhanceBattlefieldMinimap, no library. Command: /poly map
 ## Notes-frFR: Petite carte de zone permanente (redimensionnable, zoomable) avec les personnages de Polypode, les quêtes, TomTom et HandyNotes. Remplace EnhanceBattlefieldMinimap, sans librairie. Commande : /poly map
 ## Author: Baktov
-## Version: 1.8.0
+## Version: 1.8.1
 ## Dependencies: Polypode
 ## OptionalDeps: TomTom, HandyNotes, BtWQuests, MidnightRoutine
 ## SavedVariablesPerCharacter: PolypodeMapDB

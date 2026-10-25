@@ -47,7 +47,7 @@ Pièges connus :
 
 ## Dépendances vers Polypode (API publique utilisée)
 
-`P.EnableTitleDoubleClick(fenêtre, remise, hauteur)` (si présente, Polypode 2.12 : double-clic sur la barre de titre, taille par défaut).
+`P.EnableTitleDoubleClick(fenêtre, remise, hauteur)` (si présente, Polypode 2.12 : double-clic sur la barre de titre, taille par défaut). Poignée de redimensionnement de la carte : au `OnMouseDown`, ancre `TOPLEFT` (coin haut-gauche fixe, gardée par `SavePosition`) et `SetResizeBounds` maximum = place jusqu'aux bords droit et bas de l'écran (unités de la fenêtre, qui a sa propre échelle), dans `MAX_WIDTH` / `MAX_HEIGHT`, puis `StartSizing("BOTTOMRIGHT", true)` (fenêtre retenue dans l'écran : sans cela, elle s'agrandissait d'un coup hors de l'écran, comme Histoire 1.14.1).
 
 Langues (si présentes) : `P.NewLocale`, `P.AddTranslations` (Polypode 2.8), `P.OnLanguageApplied` (2.9).
 
