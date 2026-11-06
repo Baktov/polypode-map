@@ -47,6 +47,7 @@ local DEFAULTS = {
 	showHandyNotes = true,
 	showBtWQuests = true, -- quêtes disponibles et objectifs de BtWQuests
 	showMidnightRoutine = true, -- point de navigation de MidnightRoutine
+	showNaowhRoute = true, -- chemin du trajet en cours de Naowh Forever (Journeys)
 	ping = true, -- clic gauche = ping montré aux autres clients
 	zoom = 0, -- 0 à 1 : niveau de zoom gardé d'une carte à l'autre
 }
@@ -1025,6 +1026,9 @@ local function BuildSettingsPanel()
 		ns.ApplyProviders)
 	AddCheck("showMidnightRoutine", "MidnightRoutine",
 		L["Point de navigation de la routine en cours de MidnightRoutine, si l'addon est installé."], ns.ApplyProviders)
+	AddCheck("showNaowhRoute", "Naowh Forever",
+		L["Chemin du trajet en cours de Naowh Forever (Journeys), en pointillés comme sur sa carte du monde, "
+		.. "si l'addon est installé (WoW Forever)."], ns.ApplyProviders)
 	AddCheck("ping", L["Ping au clic"],
 		L["Clic sur la carte : signal animé à cet endroit, montré aussi sur la carte des autres personnages "
 		.. "(qui ont Polypode Map)."])

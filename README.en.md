@@ -82,6 +82,9 @@ marker.
 - **BtWQuests** (option): available quests of its quest chains and objectives of the tracked
   quests (its own map display options still apply); click on a marker: waypoint.
 - **MidnightRoutine** (option): waypoint of the current routine.
+- **Naowh Forever** (option, WoW Forever): path of the current journey of its Journeys module,
+  dotted in its colours (walk, flight, ship, portal...); the next step is the game's waypoint,
+  already shown.
 - Markers placed by other addons through HereBeDragons (shown with the TomTom waypoints):
   **RXPGuides** (steps, treasures and vendors), **APR**, **WaypointUI**, **HomeDecor**...
 - **All The Things**: right-click on a group of its list = TomTom waypoints, so they are shown.
@@ -116,6 +119,7 @@ settings):
 | HandyNotes | Yes | HandyNotes notes |
 | BtWQuests | Yes | Available quests and objectives of BtWQuests |
 | MidnightRoutine | Yes | MidnightRoutine waypoint |
+| Naowh Forever | Yes | Path of the current Naowh Forever journey (Journeys) |
 | Ping on click | Yes | Click on the map: ping for you and your other characters |
 | Window layer | 5 - Dialog (default) | Display layer, from the highest (7 - Fullscreen (dialog)) to the lowest (1 - Background); "Dialog" goes in front of the action bars and most windows, go lower if the map hides something |
 

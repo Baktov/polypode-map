@@ -62,6 +62,7 @@ P.AddTranslations(ns.L, "itIT", {
 	["Notes des modules de HandyNotes, si l'addon est installé."] = "Note dei moduli di HandyNotes, se l'addon è installato.",
 	["Quêtes disponibles des chaînes de BtWQuests et objectifs des quêtes suivies, si l'addon est installé (ses propres options d'affichage sur la carte restent valables). Clic sur un repère : point de navigation."] = "Missioni disponibili delle catene di BtWQuests e obiettivi delle missioni tracciate, se l'addon è installato (le sue opzioni di visualizzazione sulla mappa restano valide). Clic su un segnalino: punto di navigazione.",
 	["Point de navigation de la routine en cours de MidnightRoutine, si l'addon est installé."] = "Punto di navigazione della routine in corso di MidnightRoutine, se l'addon è installato.",
+	["Chemin du trajet en cours de Naowh Forever (Journeys), en pointillés comme sur sa carte du monde, si l'addon est installé (WoW Forever)."] = "Percorso del viaggio in corso di Naowh Forever (Journeys), tratteggiato come sulla sua mappa del mondo, se l'addon è installato (WoW Forever).",
 	["Ping au clic"] = "Segnale al clic",
 	["Clic sur la carte : signal animé à cet endroit, montré aussi sur la carte des autres personnages (qui ont Polypode Map)."] = "Clic sulla mappa: segnale animato in quel punto, mostrato anche sulla mappa degli altri personaggi (che hanno Polypode Mappa).",
 	["Plan de la fenêtre"] = "Livello della finestra",

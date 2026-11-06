@@ -84,6 +84,9 @@ point de Blizzard sous le repère.
   suivies (ses propres options d'affichage sur la carte restent valables) ; clic sur un repère :
   point de navigation.
 - **MidnightRoutine** (option) : point de navigation de la routine en cours.
+- **Naowh Forever** (option, WoW Forever) : chemin du trajet en cours de son module Journeys, en
+  pointillés de ses couleurs (marche, vol, bateau, portail...) ; le point de l'étape suivante est
+  le point de navigation du jeu, déjà affiché.
 - Repères posés par d'autres addons via HereBeDragons (affichés avec les points TomTom) :
   **RXPGuides** (étapes, trésors et vendeurs), **APR**, **WaypointUI**, **HomeDecor**...
 - **All The Things** : clic droit sur un groupe de sa liste = points TomTom, donc affichés.
@@ -118,6 +121,7 @@ propres à chaque personnage) :
 | HandyNotes | Oui | Notes de HandyNotes |
 | BtWQuests | Oui | Quêtes disponibles et objectifs de BtWQuests |
 | MidnightRoutine | Oui | Point de navigation de MidnightRoutine |
+| Naowh Forever | Oui | Chemin du trajet en cours de Naowh Forever (Journeys) |
 | Ping au clic | Oui | Clic sur la carte : ping chez vous et vos autres personnages |
 | Plan de la fenêtre | 5 - Dialogue | Plan d'affichage, du plus haut (7 - Plein écran dialogue) au plus bas (1 - Arrière-plan) ; « Dialogue » passe devant les barres d'action et la plupart des fenêtres, descendre si la carte cache quelque chose |
 
@@ -150,6 +154,7 @@ other language).*
 
 ## Version
 
+`1.9.0` : chemin du trajet en cours de Naowh Forever (Journeys) sur la carte, en option (WoW Forever).
 `1.8.1` : redimensionnement par la poignée du coin corrigé (plus d'agrandissement d'un coup hors de l'écran ; coin haut-gauche fixe, taille bornée à l'écran).
 `1.8.0` : double-clic sur l'en-tête : retour à la taille par défaut (300 × 220 ; sans effet si la carte est figée ; Polypode 2.12).
 `1.7.2` : chemins des fichiers de langue compatibles macOS.

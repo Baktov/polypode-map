@@ -1,4 +1,4 @@
--- Polypode Map: Plugins — repères d'autres addons sur la carte (TomTom / HereBeDragons, HandyNotes)
+-- Polypode Map: Plugins — repères d'autres addons sur la carte (TomTom / HereBeDragons, HandyNotes, Naowh Forever...)
 
 local _, ns = ...
 
@@ -9,6 +9,7 @@ local _, ns = ...
 --     récupère d'elle-même à son ouverture, et nous les rendons à sa fermeture.
 --   * TomTom : Alt + clic droit sur la carte = nouveau point à cet endroit.
 --   * HandyNotes : son fournisseur de carte du monde (HandyNotes.WorldMapDataProvider), copié.
+--   * Naowh Forever : chemin du trajet en cours (Journeys), redessiné par notre propre repère.
 -- RareScanner (12.1) n'est pas repris : ses repères sont liés en dur à la carte du monde
 -- (RSWorldMap) ; les rares visibles en jeu restent montrés par les vignettes de Blizzard.
 
@@ -108,6 +109,202 @@ local function SetupHandyNotes()
 	end
 	handyNotesFactory = function()
 		current = CreateFromMixins(template)
+		return { current }
+	end
+end
+
+-- NAOWH FOREVER (JOURNEYS) --------------------------------------------------------------------
+
+-- Chemin du trajet en cours de Naowh Forever (module Journeys de NaowhForever_Utilities, WoW
+-- Forever), en pointillés comme sur sa carte du monde : la marche depuis le joueur, puis chaque
+-- étape (vol, bateau, portail...) de sa couleur. Son fournisseur est local à son fichier : on
+-- reprend ce qu'il publie dans NaowhForever.Journeys (Guide.Points, World.Player, RouteDots,
+-- RouteTint) et on dessine sur notre propre repère. Le point de navigation de l'étape est celui du
+-- jeu, déjà montré par la carte. Redessiné à chaque changement du trajet, au zoom, et toutes les
+-- NAOWH_TICK secondes (le joueur avance) quand un trajet est en cours.
+local NAOWH_TEMPLATE = "PolypodeMapNaowhRoutePinTemplate"
+local NAOWH_WALK_SIZE, NAOWH_LEG_SIZE = 5, 4 -- pixels à l'écran (tailles de sa mini-carte)
+local NAOWH_WALK_GAP, NAOWH_LEG_GAP = 10, 9
+local NAOWH_WALK_ALPHA, NAOWH_LEG_ALPHA = 0.95, 0.6
+local NAOWH_ACCENT = { r = 0, g = 0.57, b = 0.93 } -- bleu de Naowh, si son thème manque
+local NAOWH_TICK = 0.5 -- secondes
+
+local naowhFactory
+
+local function SetupNaowhRoute()
+	local naowh = _G.NaowhForever
+	local journeys = type(naowh) == "table" and naowh.Journeys
+	if type(journeys) ~= "table" or type(journeys.On) ~= "function" or type(journeys.RouteDots) ~= "function"
+		or type(journeys.Guide) ~= "table" or type(journeys.Guide.Points) ~= "function"
+		or type(journeys.World) ~= "table" or type(journeys.World.Player) ~= "function" then
+		return
+	end
+	local guide, world = journeys.Guide, journeys.World
+	local tints = type(journeys.RouteTint) == "table" and journeys.RouteTint or {}
+	local style = type(naowh.Shared) == "table" and naowh.Shared.Style
+	local dotTexture = type(style) == "table" and style.ROUND
+	local accent = type(naowh.THEME) == "table" and naowh.THEME.accent or NAOWH_ACCENT
+
+	-- Points du trajet (coordonnées du monde) : le joueur, puis ceux de Naowh ; nil sans trajet.
+	local function CollectPoints()
+		local ahead = guide.Points()
+		if not ahead then
+			return nil
+		end
+		local list = {}
+		local here = world.Player()
+		if here then
+			list[1] = { c = here.c, x = here.x, y = here.y, walk = true }
+		end
+		for _, point in ipairs(ahead) do
+			list[#list + 1] = point
+		end
+		return list
+	end
+
+	local pinMixin = CreateFromMixins(MapCanvasPinMixin)
+	pinMixin.SetPassThroughButtons = function() end -- aucun clic (combat), comme nos autres repères
+	pinMixin.CheckMouseButtonPassthrough = function() end
+
+	function pinMixin:OnLoad()
+		self:UseFrameLevelType("PIN_FRAME_LEVEL_AREA_POI")
+		self:SetIgnoreGlobalPinScale(true)
+		self.dots = {}
+		self.count = 0
+		self.place = function(x, y)
+			self:Place(x, y)
+		end
+	end
+
+	function pinMixin:Place(x, y)
+		self.count = self.count + 1
+		local dot = self.dots[self.count]
+		if not dot then
+			dot = self:CreateTexture(nil, "OVERLAY")
+			if dotTexture then
+				dot:SetTexture(dotTexture, nil, nil, "TRILINEAR")
+			else
+				dot:SetAtlas("WhiteCircle-RaidBlips")
+			end
+			self.dots[self.count] = dot
+		end
+		dot:ClearAllPoints()
+		dot:SetPoint("CENTER", self, "TOPLEFT", x, -y)
+		dot:SetSize(self.size, self.size)
+		local tint = self.tint
+		if tint then
+			dot:SetVertexColor(tint[1], tint[2], tint[3], self.alpha)
+		else
+			dot:SetVertexColor(accent.r, accent.g, accent.b, self.alpha)
+		end
+		dot:Show()
+	end
+
+	-- Le repère couvre toute la carte ; ses points gardent la même taille à l'écran quel que soit le zoom.
+	function pinMixin:DrawDots()
+		local map = self:GetMap()
+		local mapID = map and map:GetMapID()
+		local list = mapID and CollectPoints()
+		if not list then
+			return
+		end
+		local w, h = map:GetCanvas():GetSize()
+		self:SetSize(w, h)
+		self:SetPosition(0.5, 0.5)
+		local continent = C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(0.5, 0.5))
+		local scale = 1 / map:GetCanvasScale()
+		local last, carry
+		for _, point in ipairs(list) do
+			local u, v
+			if continent and point.c == continent then
+				local _, pos = C_Map.GetMapPosFromWorldPos(point.c, CreateVector2D(point.x, point.y), mapID)
+				if pos then
+					u, v = pos.x, pos.y
+				end
+			end
+			if u and last then
+				self.size = (point.walk and NAOWH_WALK_SIZE or NAOWH_LEG_SIZE) * scale
+				self.alpha = point.walk and NAOWH_WALK_ALPHA or NAOWH_LEG_ALPHA
+				self.tint = not point.walk and tints[point.mode] or nil
+				carry = journeys.RouteDots(last[1] * w, last[2] * h, u * w, v * h,
+					(point.walk and NAOWH_WALK_GAP or NAOWH_LEG_GAP) * scale, carry, self.place)
+			else
+				carry = nil
+			end
+			last = u and { u, v } or nil
+		end
+	end
+
+	function pinMixin:Draw()
+		self.count = 0
+		pcall(self.DrawDots, self) -- code de Naowh et positions (instances) : jamais d'erreur ici
+		for i = self.count + 1, #self.dots do
+			self.dots[i]:Hide()
+		end
+	end
+
+	function pinMixin:OnAcquired()
+		self:Draw()
+	end
+
+	function pinMixin:OnCanvasScaleChanged()
+		self:Draw()
+	end
+
+	local providerMixin = CreateFromMixins(MapCanvasDataProviderMixin)
+
+	function providerMixin:OnAdded(map)
+		MapCanvasDataProviderMixin.OnAdded(self, map)
+		ns.RegisterPinPool(map, NAOWH_TEMPLATE, pinMixin)
+		self.ticker = C_Timer.NewTicker(NAOWH_TICK, function()
+			local owner = self:GetMap()
+			if self.pin and owner and owner:IsVisible() then
+				self.pin:Draw()
+			end
+		end)
+	end
+
+	function providerMixin:OnRemoved(map)
+		if self.ticker then
+			self.ticker:Cancel()
+			self.ticker = nil
+		end
+		MapCanvasDataProviderMixin.OnRemoved(self, map)
+	end
+
+	function providerMixin:RemoveAllData()
+		self.pin = nil
+		local map = self:GetMap()
+		if map then
+			map:RemoveAllPinsByTemplate(NAOWH_TEMPLATE)
+		end
+	end
+
+	function providerMixin:RefreshAllData()
+		self:RemoveAllData()
+		local map = self:GetMap()
+		local ok, on = pcall(journeys.On)
+		local okCurrent, journey = pcall(guide.Current)
+		if map and ok and on and okCurrent and journey then
+			self.pin = map:AcquirePin(NAOWH_TEMPLATE)
+		end
+	end
+
+	local current
+	local function Refresh()
+		if current and current:GetMap() then
+			pcall(current.RefreshAllData, current)
+		end
+	end
+	if type(guide.OnChange) == "function" then
+		pcall(guide.OnChange, Refresh)
+	end
+	if type(journeys.Settings) == "table" and type(journeys.Settings.OnChange) == "function" then
+		pcall(journeys.Settings.OnChange, Refresh)
+	end
+
+	naowhFactory = function()
+		current = CreateFromMixins(providerMixin)
 		return { current }
 	end
 end
@@ -220,6 +417,9 @@ function ns.ApplyPluginProviders(setGroup)
 	if handyNotesFactory then
 		setGroup("handyNotes", db.showHandyNotes, handyNotesFactory)
 	end
+	if naowhFactory then
+		setGroup("naowhRoute", db.showNaowhRoute, naowhFactory)
+	end
 	for _, spec in ipairs(EXTERNAL) do
 		if externalFactories[spec.group] then
 			setGroup(spec.group, db[spec.setting], externalFactories[spec.group])
@@ -234,6 +434,7 @@ end
 function ns.InitPlugins(map)
 	SetupHereBeDragons(map)
 	SetupHandyNotes()
+	SetupNaowhRoute()
 	SetupExternal()
 	table.insert(ns.clickHandlers, OnTomTomClick)
 	ns.ApplyProviders()
