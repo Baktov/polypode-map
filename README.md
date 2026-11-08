@@ -139,6 +139,12 @@ propres à chaque personnage) :
 
 ---
 
+## Licence
+
+Polypode Map est un logiciel libre, sous licence **GNU GPL version 3** (fichier
+[`LICENSE`](LICENSE)) : vous pouvez le reprendre, le modifier et le redistribuer, à condition de
+garder cette licence et de citer l'auteur. Copyright (C) 2026 Baktov.
+
 ## Langues (Languages)
 
 Polypode Map s'affiche dans la langue choisie dans Polypode (option « Langue / Language », `/poly langue`),
@@ -154,6 +160,7 @@ other language).*
 
 ## Version
 
+`1.9.1` : licence libre **GNU GPL version 3** (fichier `LICENSE`).
 `1.9.0` : chemin du trajet en cours de Naowh Forever (Journeys) sur la carte, en option (WoW Forever).
 `1.8.1` : redimensionnement par la poignée du coin corrigé (plus d'agrandissement d'un coup hors de l'écran ; coin haut-gauche fixe, taille bornée à l'écran).
 `1.8.0` : double-clic sur l'en-tête : retour à la taille par défaut (300 × 220 ; sans effet si la carte est figée ; Polypode 2.12).
