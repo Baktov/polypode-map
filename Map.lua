@@ -369,6 +369,45 @@ local function CenterOnPlayer()
 	scroll:SetPanTarget(x, y)
 end
 
+-- AcquirePin finit par CheckMouseButtonPassthrough → SetPassThroughButtons, interdit en combat. Sur
+-- notre carte, l'exécution est toujours teintée (le moteur relit des champs que notre code écrit :
+-- zoom, défilement) : en combat, chaque repère ajouté par un fournisseur de Blizzard (quêtes...)
+-- déclenchait une action bloquée. Chaque réserve de repères est enveloppée à sa création : en combat,
+-- le réglage du clic droit traversant est sauté (nos propres repères l'ignorent déjà).
+local function GuardPin(pin)
+	local check = pin and not pin.polypodeGuarded and pin.CheckMouseButtonPassthrough
+	if check then
+		pin.CheckMouseButtonPassthrough = function(self, ...)
+			if not InCombatLockdown() then
+				return check(self, ...)
+			end
+		end
+		pin.polypodeGuarded = true
+	end
+end
+
+local function GuardPinPools(map)
+	local function Wrap(pool)
+		local acquire = type(pool) == "table" and pool.Acquire
+		if acquire then
+			pool.Acquire = function(self, ...)
+				local pin, isNew = acquire(self, ...)
+				GuardPin(pin)
+				return pin, isNew
+			end
+		end
+	end
+	for _, pool in pairs(map.pinPools) do
+		Wrap(pool)
+	end
+	setmetatable(map.pinPools, {
+		__newindex = function(pools, template, pool)
+			Wrap(pool)
+			rawset(pools, template, pool)
+		end,
+	})
+end
+
 local function CreateCanvas(parent)
 	-- Équivalent du modèle MapCanvasFrameTemplate, construit en Lua : le conteneur défilant doit
 	-- exister avant MapCanvasMixin.OnLoad.
@@ -389,6 +428,7 @@ local function CreateCanvas(parent)
 
 	Mixin(map, MapCanvasMixin)
 	map:OnLoad()
+	GuardPinPools(map)
 	map:SetScript("OnUpdate", map.OnUpdate)
 	map:SetScript("OnEvent", map.OnEvent)
 	map:SetScript("OnHide", map.OnHide)

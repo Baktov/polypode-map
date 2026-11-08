@@ -160,6 +160,7 @@ other language).*
 
 ## Version
 
+`1.9.2` : plus de message « Action bloquée par le jeu : SetPassThroughButtons() » en combat quand des repères de quête apparaissent sur la carte.
 `1.9.1` : licence libre **GNU GPL version 3** (fichier `LICENSE`).
 `1.9.0` : chemin du trajet en cours de Naowh Forever (Journeys) sur la carte, en option (WoW Forever).
 `1.8.1` : redimensionnement par la poignée du coin corrigé (plus d'agrandissement d'un coup hors de l'écran ; coin haut-gauche fixe, taille bornée à l'écran).

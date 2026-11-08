@@ -30,7 +30,7 @@ Pièges connus :
   `RemoveDataProvider` n'appelle pas `OnHide`.
 - Positions : `C_Map.GetPlayerMapPosition` ne marche que pour soi et le groupe, et ne renvoie rien
   en instance ; valeurs secrètes écartées par `issecretvalue` (`ns.IsSecret`).
-- `AcquirePin` appelle `SetPassThroughButtons`, interdit en combat : neutralisé sur nos mixins de repères (comme HereBeDragons).
+- `AcquirePin` appelle `SetPassThroughButtons`, interdit en combat : neutralisé sur nos mixins de repères (comme HereBeDragons). Pour les repères des fournisseurs de Blizzard (quêtes...), 1.9.2 : `GuardPinPools` enveloppe chaque réserve de `map.pinPools` (métatable `__newindex`) et saute `CheckMouseButtonPassthrough` en combat. Notre exécution est toujours teintée : le moteur relit des champs que notre code écrit (`targetScrollX/Y` du zoom progressif, etc.), `taint.log` d'un testeur du 2026-11-08.
 - Les icônes de HereBeDragons n'ont qu'un parent : la carte du monde les reprend à son ouverture,
   nous les reprenons à l'image suivante de chaque modification et à sa fermeture.
 
