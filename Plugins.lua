@@ -65,9 +65,10 @@ local function SetupHereBeDragons(map)
 	end
 end
 
--- Alt + clic droit sur la carte : point TomTom à cet endroit.
+-- Alt + clic droit sur la carte : point TomTom à cet endroit (clic droit seul en interface
+-- manette, ns.IsGamepad de Map.lua).
 local function OnTomTomClick(button, cursorX, cursorY)
-	if button ~= "RightButton" or not IsAltKeyDown() or not (TomTom and TomTom.AddWaypoint) then
+	if button ~= "RightButton" or not (IsAltKeyDown() or ns.IsGamepad()) or not (TomTom and TomTom.AddWaypoint) then
 		return false
 	end
 	local mapID = ns.GetMapID()

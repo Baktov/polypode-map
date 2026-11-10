@@ -630,6 +630,14 @@ local function ShowOptions(owner)
 	end
 end
 
+-- Interface manette de Blizzard (P.IsGamepadUI, Polypode 2.15.1, testée avant usage) : Alt / Maj
+-- + clic y sont malaisés ; dans ce mode seulement, clic droit sur la carte = point TomTom
+-- (Plugins.lua) et clic droit sur le bouton Map = menu (options, recentrage). À la souris, rien
+-- ne change.
+function ns.IsGamepad()
+	return P.IsGamepadUI ~= nil and P.IsGamepadUI()
+end
+
 local function ShowHeaderTooltip(owner)
 	GameTooltip:SetOwner(owner, "ANCHOR_TOP")
 	GameTooltip:AddLine(L["Polypode Map"])
@@ -642,7 +650,8 @@ local function ShowHeaderTooltip(owner)
 		GameTooltip:AddLine(L["Clic sur la carte : ping montré aux autres personnages"], 1, 1, 1, true)
 	end
 	if TomTom and TomTom.AddWaypoint then
-		GameTooltip:AddLine(L["Alt + clic droit sur la carte : point TomTom"], 1, 1, 1, true)
+		GameTooltip:AddLine(ns.IsGamepad() and L["Clic droit sur la carte : point TomTom"]
+			or L["Alt + clic droit sur la carte : point TomTom"], 1, 1, 1, true)
 	end
 	if P.ShowTooltip then
 		P.ShowTooltip()
@@ -1092,12 +1101,36 @@ ns.OnLanguageApplied(function()
 	if not P.AddTitleButton then
 		return
 	end
+	local function TooltipLines()
+		if ns.IsGamepad() then
+			return {
+				L["Polypode Map"],
+				L["Clic gauche : afficher / masquer la petite carte de zone (personnages de l'équipe, quêtes, TomTom)."],
+				L["Clic droit : options de la carte, recentrer la carte"],
+			}
+		end
+		return {
+			L["Polypode Map"],
+			L["Clic gauche : afficher / masquer la petite carte de zone (personnages de l'équipe, quêtes, TomTom)."],
+			L["Maj + clic gauche : recentrer la carte (position, taille et plan par défaut), comme /poly map reset"],
+			L["Clic droit : options de la carte"],
+		}
+	end
 	P.AddTitleButton({
 		text = L["Map"],
 		width = 50,
 		rightClick = true,
 		onClick = function(button, mouseButton)
-			if mouseButton == "RightButton" then
+			if mouseButton == "RightButton" and ns.IsGamepad() and MenuUtil then
+				-- Interface manette : Maj + clic malaisé, le recentrage passe par ce menu.
+				MenuUtil.CreateContextMenu(button, function(_, root)
+					root:CreateTitle(L["Polypode Map"])
+					root:CreateButton(L["Options de la carte"], function()
+						ShowOptions(button)
+					end)
+					root:CreateButton(L["Recentrer la carte"], ns.ResetMap)
+				end)
+			elseif mouseButton == "RightButton" then
 				ShowOptions(button)
 			elseif IsShiftKeyDown() then
 				ns.ResetMap()
@@ -1105,12 +1138,8 @@ ns.OnLanguageApplied(function()
 				P.ToggleMap()
 			end
 		end,
-		tooltip = {
-			L["Polypode Map"],
-			L["Clic gauche : afficher / masquer la petite carte de zone (personnages de l'équipe, quêtes, TomTom)."],
-			L["Maj + clic gauche : recentrer la carte (position, taille et plan par défaut), comme /poly map reset"],
-			L["Clic droit : options de la carte"],
-		},
+		-- Infobulle qui suit le mode (Polypode 2.19.0 : fonction acceptée), sinon liste fixe.
+		tooltip = P.TITLE_TOOLTIP_FUNCTION and TooltipLines or TooltipLines(),
 		onCreate = function(button)
 			P.ui.mapButton = button
 		end,

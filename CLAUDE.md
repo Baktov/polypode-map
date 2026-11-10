@@ -51,6 +51,7 @@ Pièges connus :
 
 Langues (si présentes) : `P.NewLocale`, `P.AddTranslations` (Polypode 2.8), `P.OnLanguageApplied` (2.9).
 
+`P.IsGamepadUI` (si présente, Polypode 2.15.1 : `ns.IsGamepad`, Map.lua, 1.10.0 — interface manette : clic droit sur la carte = point TomTom sans Alt, `OnTomTomClick` de Plugins.lua ; clic droit sur le bouton = menu `MenuUtil.CreateContextMenu` options / `ns.ResetMap`), `P.TITLE_TOOLTIP_FUNCTION` (si présent, Polypode 2.19 : infobulle du bouton en fonction `TooltipLines`, qui suit le mode ; sinon liste fixe),
 `P.AddTitleButton`, `P.RegisterSlashCommand`, `P.optionsCategory`, `P.ToggleOptionsPopup`,
 `P.ColorClicks`, `P.ShowTooltip` (ces trois si présentes), `P.RegisterMessageHandler`,
 `P.RegisterPeerCallback`, `P.WhisperOnline`, `P.IsSender`, `P.GetTeamToken`, `P.GetCharKey`,
