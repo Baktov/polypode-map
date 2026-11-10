@@ -53,7 +53,9 @@ left-click** on the button (Polypode window or module column of the floating bar
 
 Blizzard's **gamepad interface** (WoW Forever): Shift and Alt + click are awkward there. In this mode
 only, a **right-click on the map** places the TomTom waypoint (without Alt), and **right-clicking
-the Map button** opens a menu: map options, recenter the map. With a mouse, nothing changes.
+the Map button** opens a menu: map options, recenter the map. Without a mouse wheel, **+** and
+**−** buttons appear at the bottom left of the map on hover: zoom in / out toward the center of
+the view. With a mouse, nothing changes.
 
 When the mouse is not over the map, it **follows the player**: map of their zone, centered on them
 (option). The header then shows your own coordinates.

@@ -54,8 +54,9 @@ flottante) : même effet que `/poly map reset`.
 
 **Interface manette** de Blizzard (WoW Forever) : Maj et Alt + clic y sont malaisés. Dans ce mode
 seulement, un **clic droit sur la carte** pose le point TomTom (sans Alt), et le **clic droit sur
-le bouton Map** ouvre un menu : options de la carte, recentrer la carte. À la souris, rien ne
-change.
+le bouton Map** ouvre un menu : options de la carte, recentrer la carte. Sans molette, deux
+boutons **+** et **−** apparaissent en bas à gauche de la carte au survol : zoom avant / arrière
+vers le centre de la vue. À la souris, rien ne change.
 
 Quand la souris n'est pas sur la carte, elle **suit le joueur** : carte de sa zone, centrée sur
 lui (option). L'en-tête affiche alors vos propres coordonnées.
@@ -165,6 +166,7 @@ other language).*
 
 ## Version
 
+`1.11.0` : interface manette de Blizzard : boutons + et − en bas à gauche de la carte (au survol) pour zoomer sans molette. À la souris, rien ne change.
 `1.10.0` : interface manette de Blizzard : clic droit sur la carte = point TomTom, clic droit sur le bouton Map = menu (options, recentrer) ; infobulle du bouton adaptée (Polypode 2.19). À la souris, rien ne change.
 `1.9.2` : plus de message « Action bloquée par le jeu : SetPassThroughButtons() » en combat quand des repères de quête apparaissent sur la carte.
 `1.9.1` : licence libre **GNU GPL version 3** (fichier `LICENSE`).

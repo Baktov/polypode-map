@@ -64,6 +64,7 @@ end
 ns.IsSecret = IsSecret
 
 local frame, canvas, header, zoneText, coordText, grip, lockButton
+local zoomButtons = {} -- boutons + / − de l'interface manette (affichés au survol, UpdateHover)
 local hovered = false
 local providers = {} -- [groupe] = { fournisseur, ... } ajoutés à la carte
 
@@ -275,7 +276,8 @@ local function SmoothWheelZoom(map, scroll, onZoom)
 	scroll.normalizedPanYLerpAmount = ZOOM_LERP
 	local anchor -- { px, py, cx, cy, s0 } : point visé, centre et échelle au début du zoom
 
-	scroll:SetScript("OnMouseWheel", function(self, delta)
+	-- Zoom de delta crans vers le point (px, py) de la carte, qui reste fixe à l'écran.
+	local function Zoom(self, delta, px, py)
 		if not (self.zoomLevels and #self.zoomLevels > 0) then
 			return
 		end
@@ -285,11 +287,20 @@ local function SmoothWheelZoom(map, scroll, onZoom)
 		if target == self.targetScale then
 			return
 		end
-		local px, py = self:GetNormalizedCursorPosition()
-		anchor = { px = px, py = py, cx = self:GetCurrentScrollX() or 0.5, cy = self:GetCurrentScrollY() or 0.5, s0 = current }
+		local cx, cy = self:GetCurrentScrollX() or 0.5, self:GetCurrentScrollY() or 0.5
+		anchor = { px = px or cx, py = py or cy, cx = cx, cy = cy, s0 = current }
 		self:SetZoomTarget(target)
 		onZoom()
+	end
+
+	scroll:SetScript("OnMouseWheel", function(self, delta)
+		Zoom(self, delta, self:GetNormalizedCursorPosition())
 	end)
+
+	-- Boutons + / − de l'interface manette (sans molette) : zoom vers le centre de la vue.
+	ns.ZoomStep = function(delta)
+		Zoom(scroll, delta)
+	end
 
 	scroll:HookScript("OnUpdate", function(self)
 		if not anchor or not self.currentScale then
@@ -612,6 +623,10 @@ local function UpdateHover(isOver)
 	frame:SetAlpha(hovered and 1 or db.opacity / 100)
 	header:SetShown(hovered or db.headerAlways)
 	grip:SetShown(hovered and not db.locked)
+	local zoomShown = hovered and ns.IsGamepad()
+	for _, button in ipairs(zoomButtons) do
+		button:SetShown(zoomShown)
+	end
 	if hovered then
 		UpdateZoneText()
 	end
@@ -645,7 +660,8 @@ local function ShowHeaderTooltip(owner)
 	GameTooltip:AddLine(L["Clic gauche sur l'en-tête : ajuster le cadre aux proportions de la carte affichée"],
 		1, 1, 1, true)
 	GameTooltip:AddLine(L["Clic droit sur l'en-tête : options"], 1, 1, 1, true)
-	GameTooltip:AddLine(L["Molette : zoom ; glisser sur la carte : déplacer la vue"], 1, 1, 1, true)
+	GameTooltip:AddLine(ns.IsGamepad() and L["Boutons + et - en bas à gauche : zoom ; glisser sur la carte : déplacer la vue"]
+		or L["Molette : zoom ; glisser sur la carte : déplacer la vue"], 1, 1, 1, true)
 	if Settings_().ping then
 		GameTooltip:AddLine(L["Clic sur la carte : ping montré aux autres personnages"], 1, 1, 1, true)
 	end
@@ -759,6 +775,41 @@ local function Build()
 	zoneText:SetPoint("RIGHT", coordText, "LEFT", -6, 0)
 	zoneText:SetJustifyH("LEFT")
 	zoneText:SetWordWrap(false)
+
+	-- Interface manette (ns.IsGamepad) : ni molette ni Alt ; boutons + / − en bas à gauche, affichés
+	-- au survol (UpdateHover), zoom de deux crans vers le centre de la vue (ns.ZoomStep).
+	local function ZoomButton(texturePrefix, delta, tip)
+		local button = CreateFrame("Button", nil, frame)
+		button:SetSize(20, 20)
+		button:SetFrameLevel(frame:GetFrameLevel() + 5000)
+		button:SetNormalTexture(texturePrefix .. "-Up")
+		button:SetPushedTexture(texturePrefix .. "-Down")
+		button:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight", "ADD")
+		button:SetScript("OnClick", function()
+			if ns.ZoomStep then
+				ns.ZoomStep(delta)
+			end
+		end)
+		button:SetScript("OnEnter", function(self)
+			GameTooltip:SetOwner(self, "ANCHOR_TOP")
+			GameTooltip:AddLine(tip)
+			if P.ShowTooltip then
+				P.ShowTooltip()
+			else
+				GameTooltip:Show()
+			end
+		end)
+		button:SetScript("OnLeave", function()
+			GameTooltip:Hide()
+		end)
+		button:Hide()
+		zoomButtons[#zoomButtons + 1] = button
+		return button
+	end
+	local zoomOut = ZoomButton("Interface\\Buttons\\UI-MinusButton", -2, L["Dézoomer"])
+	local zoomIn = ZoomButton("Interface\\Buttons\\UI-PlusButton", 2, L["Zoomer"])
+	zoomOut:SetPoint("BOTTOMLEFT", 6, 6)
+	zoomIn:SetPoint("LEFT", zoomOut, "RIGHT", 4, 0)
 
 	-- Poignée de redimensionnement (bas-droite), affichée au survol si la carte n'est pas figée.
 	grip = CreateFrame("Button", nil, frame)
