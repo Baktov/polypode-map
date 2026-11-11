@@ -1,8 +1,13 @@
 -- Polypode Map: Members — personnages de Polypode sur la carte (positions échangées, repères nommés, ping)
 
 local _, ns = ...
-local P = Polypode
+local P = ns.P
 local L = ns.L
+
+-- Sans Polypode (Map installé seul) : ni équipe ni messages, donc ni repères de personnages ni ping.
+if not ns.hasPolypode then
+	return
+end
 
 -- Repère de chaque personnage de l'équipe sélectionnée (ou de tout le roster, option showAll),
 -- soi excepté (flèche de Blizzard) : point en couleur de classe, nom au-dessus, couronne du leader.

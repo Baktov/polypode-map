@@ -1,7 +1,7 @@
 -- Polypode Map: Map — petite carte de zone permanente (fenêtre, moteur de carte de Blizzard, options)
 
 local ADDON_NAME, ns = ...
-local P = Polypode -- dépendance obligatoire (## Dependencies: Polypode), chargée avant nous
+local P = ns.P -- Polypode, ou table locale sans lui (Locale.lua)
 local L = ns.L
 
 -- La carte est une instance du moteur commun aux cartes de Blizzard (MapCanvasMixin, celui de la
@@ -50,6 +50,8 @@ local DEFAULTS = {
 	showNaowhRoute = true, -- chemin du trajet en cours de Naowh Forever (Journeys)
 	ping = true, -- clic gauche = ping montré aux autres clients
 	zoom = 0, -- 0 à 1 : niveau de zoom gardé d'une carte à l'autre
+	minimapButton = not ns.hasPolypode, -- bouton de la minicarte (par défaut : seulement sans Polypode)
+	minimapAngle = 215, -- position du bouton autour de la minicarte (degrés)
 }
 ns.DEFAULTS = DEFAULTS
 
@@ -637,7 +639,7 @@ ns.RefreshHover = function()
 	end
 end
 
-local function ShowOptions(owner)
+function ns.ShowOptions(owner)
 	if P.ToggleOptionsPopup and ns.settingsPopup then
 		P.ToggleOptionsPopup(owner, ns.settingsPopup)
 	elseif ns.settingsCategory and Settings and Settings.OpenToCategory then
@@ -662,7 +664,7 @@ local function ShowHeaderTooltip(owner)
 	GameTooltip:AddLine(L["Clic droit sur l'en-tête : options"], 1, 1, 1, true)
 	GameTooltip:AddLine(ns.IsGamepad() and L["Boutons + et - en bas à gauche : zoom ; glisser sur la carte : déplacer la vue"]
 		or L["Molette : zoom ; glisser sur la carte : déplacer la vue"], 1, 1, 1, true)
-	if Settings_().ping then
+	if ns.hasPolypode and Settings_().ping then
 		GameTooltip:AddLine(L["Clic sur la carte : ping montré aux autres personnages"], 1, 1, 1, true)
 	end
 	if TomTom and TomTom.AddWaypoint then
@@ -717,7 +719,7 @@ local function Build()
 	end)
 	header:SetScript("OnMouseUp", function(self, button)
 		if button == "RightButton" then
-			ShowOptions(self)
+			ns.ShowOptions(self)
 		elseif button == "LeftButton" and not self.dragged then
 			ns.FitToMap()
 		end
@@ -1051,9 +1053,18 @@ local function BuildSettingsPanel()
 	end
 
 	AddCheck("shown", L["Afficher la carte"],
-		L["Petite carte de zone permanente. Même effet que le bouton « Map » de Polypode et /poly map."],
+		ns.hasPolypode and L["Petite carte de zone permanente. Même effet que le bouton « Map » de Polypode et /poly map."]
+			or L["Petite carte de zone permanente. Même effet que le bouton de la minicarte et /pmap."],
 		function(value)
 			P.ToggleMap(value)
+		end)
+	AddCheck("minimapButton", L["Bouton de la minicarte"],
+		L["Bouton rond au bord de la minicarte : clic gauche, afficher / masquer la carte ; clic droit, options ; "
+		.. "glisser, le déplacer autour de la minicarte."],
+		function()
+			if ns.ApplyMinimapButton then
+				ns.ApplyMinimapButton()
+			end
 		end)
 	AddCheck("locked", L["Figer la carte"],
 		L["Empêche de déplacer (glisser l'en-tête) et de redimensionner (poignée bas-droite) la carte. "
@@ -1098,20 +1109,22 @@ local function BuildSettingsPanel()
 	AddSlider("memberScale", L["Taille des personnages"], 50, 250, 10,
 		L["Taille de votre flèche, des points du groupe et des repères des personnages de Polypode."],
 		ns.ApplyMemberScale)
-	AddCheck("showNames", L["Noms des personnages"],
-		L["Affiche le nom de chaque personnage de Polypode au-dessus de son repère."],
-		function()
-			if ns.RefreshMembers then
-				ns.RefreshMembers()
-			end
-		end)
-	AddCheck("showAll", L["Tous les personnages"],
-		L["Montre tous les personnages du roster de Polypode, et non seulement ceux de l'équipe sélectionnée."],
-		function()
-			if ns.RefreshMembers then
-				ns.RefreshMembers()
-			end
-		end)
+	if ns.hasPolypode then
+		AddCheck("showNames", L["Noms des personnages"],
+			L["Affiche le nom de chaque personnage de Polypode au-dessus de son repère."],
+			function()
+				if ns.RefreshMembers then
+					ns.RefreshMembers()
+				end
+			end)
+		AddCheck("showAll", L["Tous les personnages"],
+			L["Montre tous les personnages du roster de Polypode, et non seulement ceux de l'équipe sélectionnée."],
+			function()
+				if ns.RefreshMembers then
+					ns.RefreshMembers()
+				end
+			end)
+	end
 	AddCheck("showQuests", L["Quêtes"],
 		L["Quêtes en cours, quêtes disponibles, objectifs bonus et contenu suivi."], ns.ApplyProviders)
 	AddCheck("showWorldQuests", L["Expéditions"], L["Expéditions (quêtes mondiales) de la zone."], ns.ApplyProviders)
@@ -1129,9 +1142,11 @@ local function BuildSettingsPanel()
 	AddCheck("showNaowhRoute", "Naowh Forever",
 		L["Chemin du trajet en cours de Naowh Forever (Journeys), en pointillés comme sur sa carte du monde, "
 		.. "si l'addon est installé (WoW Forever)."], ns.ApplyProviders)
-	AddCheck("ping", L["Ping au clic"],
-		L["Clic sur la carte : signal animé à cet endroit, montré aussi sur la carte des autres personnages "
-		.. "(qui ont Polypode Map)."])
+	if ns.hasPolypode then
+		AddCheck("ping", L["Ping au clic"],
+			L["Clic sur la carte : signal animé à cet endroit, montré aussi sur la carte des autres personnages "
+			.. "(qui ont Polypode Map)."])
+	end
 	AddDropdown("strata", L["Plan de la fenêtre"], {
 		{ "FULLSCREEN_DIALOG", L["7 - Plein écran (dialogue)"] }, { "FULLSCREEN", L["6 - Plein écran"] },
 		{ "DIALOG", L["5 - Dialogue (défaut)"] }, { "HIGH", L["4 - Haut"] }, { "MEDIUM", L["3 - Moyen"] },
@@ -1177,12 +1192,12 @@ ns.OnLanguageApplied(function()
 				MenuUtil.CreateContextMenu(button, function(_, root)
 					root:CreateTitle(L["Polypode Map"])
 					root:CreateButton(L["Options de la carte"], function()
-						ShowOptions(button)
+						ns.ShowOptions(button)
 					end)
 					root:CreateButton(L["Recentrer la carte"], ns.ResetMap)
 				end)
 			elseif mouseButton == "RightButton" then
-				ShowOptions(button)
+				ns.ShowOptions(button)
 			elseif IsShiftKeyDown() then
 				ns.ResetMap()
 			else
@@ -1217,6 +1232,16 @@ local function SlashMap(args)
 	else
 		P.ToggleMap()
 	end
+end
+
+-- /pmap (et /pmap reset), avec ou sans Polypode.
+SLASH_POLYPODEMAP1 = "/pmap"
+SlashCmdList.POLYPODEMAP = function(message)
+	local args = {}
+	for word in (message or ""):gmatch("%S+") do
+		args[#args + 1] = word
+	end
+	SlashMap(args)
 end
 
 ns.OnLanguageApplied(function()

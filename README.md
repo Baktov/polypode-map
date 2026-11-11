@@ -9,7 +9,10 @@ et la librairie Scorpio, sans aucune librairie. Addon compagnon de
 [Polypode](https://github.com/Baktov/polypode), séparé : chargé ou non depuis la liste des AddOns
 de WoW, par personnage.
 
-Nécessite **Polypode 2.5.0** ou plus récent.
+**Avec ou sans Polypode.** Avec **Polypode 2.5.0** ou plus récent : personnages de l'équipe sur la
+carte, ping partagé, bouton **Map** dans la fenêtre Polypode. **Seule** (sans Polypode) : la carte,
+les quêtes, le groupe, TomTom, HandyNotes et les autres addons restent là ; on l'ouvre par `/pmap`
+ou par son **bouton de la minicarte** (icône de carte).
 
 > **Langues** : français, anglais, allemand, espagnol, italien et portugais du Brésil, selon la
 > langue choisie dans Polypode (option « Langue / Language »). Les traductions ont été faites avec
@@ -20,12 +23,12 @@ Nécessite **Polypode 2.5.0** ou plus récent.
 
 ## Installation
 
-1. Installer d'abord **Polypode** (dépendance obligatoire).
+1. *(Facultatif)* Installer **Polypode** pour voir les personnages de votre équipe sur la carte.
 2. Placer le dossier `Polypode_Map` dans `World of Warcraft/_retail_/Interface/AddOns/`
    (et, pour **WoW Forever**, dans `World of Warcraft/_forever_/Interface/AddOns/`, par
    exemple par une jonction `mklink /J`).
-3. Cocher « Polypode Map » dans la liste des AddOns **sur chaque personnage** : chacun envoie sa
-   position aux autres.
+3. Cocher « Polypode Map » dans la liste des AddOns **sur chaque personnage** : avec Polypode,
+   chacun envoie sa position aux autres.
 4. Désactiver **EnhanceBattlefieldMinimap** (et Scorpio s'il ne sert plus à rien d'autre) : les
    deux cartes peuvent cohabiter, mais font double emploi.
 
@@ -37,6 +40,12 @@ Le bouton **Map** (barre de titre de la fenêtre Polypode, clic gauche) ou `/pol
 (`/poly carte`) affiche ou masque la carte ; `/poly map reset` la remet au centre de l'écran, à sa taille et à son plan par défaut (carte introuvable). Clic droit sur le bouton ou sur l'en-tête de la carte :
 options. **Maj + clic gauche** sur le bouton (fenêtre Polypode ou colonne des modules de la barre
 flottante) : même effet que `/poly map reset`.
+
+`/pmap` (et `/pmap reset`) fait la même chose, avec ou sans Polypode. **Bouton de la minicarte**
+(icône de carte, affiché par défaut quand Polypode n'est pas installé, option « Bouton de la
+minicarte ») : clic gauche = afficher / masquer, Maj + clic gauche = recentrer, clic droit =
+options, glisser = le déplacer autour de la minicarte. Sur Retail, la carte figure aussi dans le
+**compartiment d'addons** (bouton des addons de la minicarte), avec les mêmes clics.
 
 | Geste | Effet |
 |---|---|
@@ -103,12 +112,14 @@ point de Blizzard sous le repère.
 
 ## Options
 
-Dans **Options → AddOns → Polypode → Map**, et dans la petite fenêtre du clic droit (réglages
-propres à chaque personnage) :
+Dans **Options → AddOns → Polypode → Map** (sans Polypode : **Options → AddOns → Polypode Map**),
+et dans la petite fenêtre du clic droit (réglages propres à chaque personnage). Sans Polypode, les
+options des personnages de l'équipe et du ping n'apparaissent pas.
 
 | Option | Défaut | Effet |
 |---|---|---|
-| Afficher la carte | Oui | Comme le bouton **Map** et `/poly map` |
+| Afficher la carte | Oui | Comme le bouton **Map**, `/poly map` et `/pmap` |
+| Bouton de la minicarte | Oui sans Polypode, Non avec | Bouton rond (icône de carte) au bord de la minicarte |
 | Figer la carte | Non | Ni déplacement ni redimensionnement (comme le cadenas) |
 | Suivre le joueur | Oui | Hors survol : carte de votre zone, centrée sur vous |
 | Ajuster le cadre à chaque carte | Non | À chaque changement de carte, le cadre prend les proportions de la nouvelle carte (comme le clic gauche sur l'en-tête) ; sans effet si la carte est figée |
@@ -156,7 +167,8 @@ garder cette licence et de citer l'auteur. Copyright (C) 2026 Baktov.
 Polypode Map s'affiche dans la langue choisie dans Polypode (option « Langue / Language », `/poly langue`),
 par défaut celle du jeu : français, anglais, allemand, espagnol, italien ou portugais du Brésil
 (anglais pour une autre langue). Nécessite Polypode 2.9 pour choisir la langue ; avec un Polypode plus
-ancien, le module reste en français. La commande `/poly map` garde son nom.
+ancien, le module reste en français. La commande `/poly map` garde son nom. Sans Polypode : langue du
+jeu.
 
 *Polypode Map follows the language chosen in Polypode ("Langue / Language" option, `/poly language`), by
 default the game's: French, English, German, Spanish, Italian or Brazilian Portuguese (English for any
@@ -166,6 +178,7 @@ other language).*
 
 ## Version
 
+`1.12.0` : Polypode devient **facultatif** : la carte s'installe seule (quêtes, groupe, TomTom, HandyNotes...), commande `/pmap`, **bouton de la minicarte** avec une icône de carte (par défaut sans Polypode) et entrée dans le compartiment d'addons de Retail. Avec Polypode, rien ne change.
 `1.11.0` : interface manette de Blizzard : boutons + et − en bas à gauche de la carte (au survol) pour zoomer sans molette. À la souris, rien ne change.
 `1.10.0` : interface manette de Blizzard : clic droit sur la carte = point TomTom, clic droit sur le bouton Map = menu (options, recentrer) ; infobulle du bouton adaptée (Polypode 2.19). À la souris, rien ne change.
 `1.9.2` : plus de message « Action bloquée par le jeu : SetPassThroughButtons() » en combat quand des repères de quête apparaissent sur la carte.

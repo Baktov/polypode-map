@@ -2,7 +2,7 @@
 -- Polypode/Locale.lua et MODULES.md (« Langues »).
 
 local _, ns = ...
-local P = Polypode
+local P = ns.P
 if not P.AddTranslations then
 	return
 end
@@ -91,4 +91,11 @@ P.AddTranslations(ns.L, "itIT", {
 	["Leader de l'équipe"] = "Leader della squadra",
 	["Dans votre groupe : position en direct"] = "Nel tuo gruppo: posizione in tempo reale",
 	["Position reçue il y a %s"] = "Posizione ricevuta %s fa",
+	-- Map.lua, Button.lua (1.12.0 : sans Polypode, bouton de la minicarte)
+	["Petite carte de zone permanente. Même effet que le bouton de la minicarte et /pmap."] = "Piccola mappa di zona permanente. Come il pulsante della minimappa e /pmap.",
+	["Bouton de la minicarte"] = "Pulsante della minimappa",
+	["Bouton rond au bord de la minicarte : clic gauche, afficher / masquer la carte ; clic droit, options ; glisser, le déplacer autour de la minicarte."] = "Pulsante rotondo sul bordo della minimappa: clic sinistro, mostra / nascondi la mappa; clic destro, opzioni; trascina, spostalo intorno alla minimappa.",
+	["Clic gauche : afficher / masquer la carte"] = "Clic sinistro: mostra / nascondi la mappa",
+	["Maj + clic gauche : recentrer la carte"] = "Maiusc + clic sinistro: ricentra la mappa",
+	["Glisser : déplacer le bouton autour de la minicarte"] = "Trascina: sposta il pulsante intorno alla minimappa",
 })

@@ -8,7 +8,10 @@ HandyNotes notes. It replaces **EnhanceBattlefieldMinimap** and the Scorpio libr
 library at all. Separate companion addon of [Polypode](https://github.com/Baktov/polypode): enabled
 or not in the WoW AddOns list, per character.
 
-Requires **Polypode 2.5.0** or later.
+**With or without Polypode.** With **Polypode 2.5.0** or later: team characters on the map, shared
+ping, **Map** button in the Polypode window. **On its own** (no Polypode): the map, quests, group,
+TomTom, HandyNotes and the other addons are all there; open it with `/pmap` or its **minimap
+button** (map icon).
 
 > **Languages**: French, English, German, Spanish, Italian and Brazilian Portuguese, following the
 > language chosen in Polypode (option "Langue / Language"). The translations were made with the help
@@ -19,11 +22,11 @@ Requires **Polypode 2.5.0** or later.
 
 ## Installation
 
-1. Install **Polypode** first (required dependency).
+1. *(Optional)* Install **Polypode** to see the characters of your team on the map.
 2. Put the `Polypode_Map` folder in `World of Warcraft/_retail_/Interface/AddOns/`
    (and, for **WoW Forever**, in `World of Warcraft/_forever_/Interface/AddOns/`).
-3. Enable "Polypode Map" in the AddOns list **on each character**: each one sends its position to
-   the others.
+3. Enable "Polypode Map" in the AddOns list **on each character**: with Polypode, each one sends its
+   position to the others.
 4. Disable **EnhanceBattlefieldMinimap** (and Scorpio if nothing else uses it): both maps can live
    together, but they do the same job.
 
@@ -36,6 +39,11 @@ shows or hides the map; `/poly map reset` puts it back in the middle of the scre
 size and layer (map lost). Right-click on the button or on the map header: options. **Shift +
 left-click** on the button (Polypode window or module column of the floating bar): same as
 `/poly map reset`.
+
+`/pmap` (and `/pmap reset`) does the same, with or without Polypode. **Minimap button** (map icon,
+shown by default when Polypode is not installed, "Minimap button" option): left-click = show / hide,
+Shift + left-click = recenter, right-click = options, drag = move it around the minimap. On Retail,
+the map is also in the **addon compartment** (addons button of the minimap), with the same clicks.
 
 | Gesture | Effect |
 |---|---|
@@ -101,12 +109,14 @@ marker.
 
 ## Options
 
-In **Options > AddOns > Polypode > Map**, and in the small right-click window (per-character
-settings):
+In **Options > AddOns > Polypode > Map** (without Polypode: **Options > AddOns > Polypode Map**),
+and in the small right-click window (per-character settings). Without Polypode, the team character
+and ping options are not shown.
 
 | Option | Default | Effect |
 |---|---|---|
-| Show the map | Yes | Like the **Map** button and `/poly map` |
+| Show the map | Yes | Like the **Map** button, `/poly map` and `/pmap` |
+| Minimap button | Yes without Polypode, No with it | Round button (map icon) on the edge of the minimap |
 | Lock the map | No | No moving or resizing (like the padlock) |
 | Follow the player | Yes | When not hovered: map of your zone, centered on you |
 | Fit the frame to each map | No | On each map change, the frame takes the proportions of the new map (like left-clicking the header); no effect if the map is locked |
@@ -153,7 +163,8 @@ credit the author. Copyright (C) 2026 Baktov.
 Polypode Map follows the language chosen in Polypode ("Langue / Language" option,
 `/poly language`), by default the game's: French, English, German, Spanish, Italian or Brazilian
 Portuguese (English for any other language). Choosing the language requires Polypode 2.9; with an
-older Polypode, the module stays in French. The `/poly map` command keeps its name.
+older Polypode, the module stays in French. The `/poly map` command keeps its name. Without
+Polypode: the game's language.
 
 ---
 

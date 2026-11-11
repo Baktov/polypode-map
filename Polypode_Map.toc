@@ -5,13 +5,16 @@
 ## Title-esMX: Polypode Mapa
 ## Title-itIT: Polypode Mappa
 ## Title-ptBR: Polypode Mapa
-## Notes: Small permanent zone map (resizable, zoomable) with the Polypode characters, quests, TomTom and HandyNotes. Replaces EnhanceBattlefieldMinimap, no library. Command: /poly map
-## Notes-frFR: Petite carte de zone permanente (redimensionnable, zoomable) avec les personnages de Polypode, les quêtes, TomTom et HandyNotes. Remplace EnhanceBattlefieldMinimap, sans librairie. Commande : /poly map
+## Notes: Small permanent zone map (resizable, zoomable) with the Polypode characters, quests, TomTom and HandyNotes. Replaces EnhanceBattlefieldMinimap, no library. Works with or without Polypode. Command: /pmap (or /poly map)
+## Notes-frFR: Petite carte de zone permanente (redimensionnable, zoomable) avec les personnages de Polypode, les quêtes, TomTom et HandyNotes. Remplace EnhanceBattlefieldMinimap, sans librairie. Avec ou sans Polypode. Commande : /pmap (ou /poly map)
 ## Author: Baktov
-## Version: 1.11.0
+## Version: 1.12.0
 ## X-License: GPL-3.0
-## Dependencies: Polypode
-## OptionalDeps: TomTom, HandyNotes, BtWQuests, MidnightRoutine, NaowhForever_Utilities
+## OptionalDeps: Polypode, TomTom, HandyNotes, BtWQuests, MidnightRoutine, NaowhForever_Utilities
+## IconTexture: Interface\Icons\INV_Misc_Map_01
+## AddonCompartmentFunc: PolypodeMap_OnAddonCompartmentClick
+## AddonCompartmentFuncOnEnter: PolypodeMap_OnAddonCompartmentEnter
+## AddonCompartmentFuncOnLeave: PolypodeMap_OnAddonCompartmentLeave
 ## SavedVariablesPerCharacter: PolypodeMapDB
 ## Category: Polypode
 
@@ -24,3 +27,4 @@ Locales/ptBR.lua
 Map.lua
 Members.lua
 Plugins.lua
+Button.lua
