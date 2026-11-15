@@ -124,4 +124,6 @@ P.AddTranslations(ns.L, "itIT", {
 	["Enregistre la disposition de ce personnage comme disposition par défaut : appliquée d'office à un personnage qui ouvre la carte pour la première fois, et proposée dans « Copier une disposition »."] = "Salva la disposizione di questo personaggio come disposizione predefinita: applicata automaticamente a un personaggio che apre la mappa per la prima volta, e proposta in «Copia una disposizione».",
 	["Revient à la disposition d'avant la dernière copie (pendant cette session)."] = "Torna alla disposizione precedente all'ultima copia (durante questa sessione).",
 	["Polypode Map : disposition par défaut appliquée à ce nouveau personnage."] = "Polypode Map: disposizione predefinita applicata a questo nuovo personaggio.",
+	["Aucune disposition par défaut pour l'instant."] = "Ancora nessuna disposizione predefinita.",
+	["Enregistrée par %s le %s."] = "Salvata da %s il %s.",
 })

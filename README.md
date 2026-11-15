@@ -126,7 +126,8 @@ En tête des options (panneau et petite fenêtre du clic droit), trois lignes, a
   carte en haut à droite d'une grande fenêtre de jeu reste en haut à droite d'une petite.
 - **Disposition par défaut** → **Enregistrer celle-ci** : la disposition de ce personnage devient
   celle par défaut, **appliquée d'office** à un personnage qui ouvre la carte pour la première fois
-  (message à l'écran). Le menu « Choisir... » permet aussi de l'effacer.
+  (message à l'écran). L'infobulle indique quel personnage l'a enregistrée, et quand. Le menu
+  « Choisir... » permet aussi de l'effacer.
 - **Annuler la dernière copie** → **Annuler** : revient à la disposition d'avant (pendant la session).
 
 Chaque personnage enregistre sa disposition dans une sauvegarde **commune au compte** WoW, à chaque
@@ -197,6 +198,7 @@ other language).*
 
 ## Version
 
+`1.13.1` : disposition par défaut : le personnage qui l'a enregistrée et la date sont indiqués dans l'infobulle (ligne « Disposition par défaut » des options et entrée du menu « Copier depuis »).
 `1.13.0` : **dispositions partagées** : copier la position, la taille et les options de la carte d'un autre personnage (tout, position et taille, ou options), disposition **par défaut** appliquée d'office aux nouveaux personnages, annulation de la dernière copie ; position en pourcentage de l'écran ; avec Polypode, échange entre clients connectés (et comptes). Nécessite Polypode 2.24 pour les boutons de la petite fenêtre d'options (sinon : panneau d'options).
 `1.12.0` : Polypode devient **facultatif** : la carte s'installe seule (quêtes, groupe, TomTom, HandyNotes...), commande `/pmap`, **bouton de la minicarte** avec une icône de carte (par défaut sans Polypode) et entrée dans le compartiment d'addons de Retail. Avec Polypode, rien ne change.
 `1.11.0` : interface manette de Blizzard : boutons + et − en bas à gauche de la carte (au survol) pour zoomer sans molette. À la souris, rien ne change.

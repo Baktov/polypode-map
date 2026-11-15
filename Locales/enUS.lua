@@ -124,4 +124,6 @@ P.AddTranslations(ns.L, "enUS", {
 	["Enregistre la disposition de ce personnage comme disposition par défaut : appliquée d'office à un personnage qui ouvre la carte pour la première fois, et proposée dans « Copier une disposition »."] = "Saves this character's layout as the default layout: applied automatically to a character opening the map for the first time, and offered in \"Copy a layout\".",
 	["Revient à la disposition d'avant la dernière copie (pendant cette session)."] = "Goes back to the layout before the last copy (during this session).",
 	["Polypode Map : disposition par défaut appliquée à ce nouveau personnage."] = "Polypode Map: default layout applied to this new character.",
+	["Aucune disposition par défaut pour l'instant."] = "No default layout yet.",
+	["Enregistrée par %s le %s."] = "Saved by %s on %s.",
 })

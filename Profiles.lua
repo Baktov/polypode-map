@@ -266,6 +266,7 @@ SendProfile = function(key, target)
 end
 
 local pending = {} -- [clé:version] = { count, parts }
+local UpdateDefaultRow -- infobulle de la ligne « Disposition par défaut » (plus bas)
 
 local function OnProfileMessage(rest, sender)
 	local key, updated, index, count, chunk = strsplit(":", rest or "", 5)
@@ -307,9 +308,7 @@ local function OnProfileMessage(rest, sender)
 	else
 		shared.profiles[key] = profile
 	end
-	if P.RefreshOptionsPopups then
-		P.RefreshOptionsPopups()
-	end
+	UpdateDefaultRow()
 end
 
 if P.RegisterMessageHandler then
@@ -336,6 +335,32 @@ local function DateText(profile)
 	return profile.updated and date("%d/%m/%Y %H:%M", profile.updated) or ""
 end
 
+-- « Enregistrée par <personnage> le <date>. » pour la disposition par défaut (nom en couleur de
+-- classe, celui du personnage qui l'a enregistrée), sinon « aucune ».
+local function DefaultOrigin()
+	local default = shared and shared.default
+	if not (default and not default.removed and default.data) then
+		return L["Aucune disposition par défaut pour l'instant."]
+	end
+	local name = default.label or "?"
+	local color = default.class and C_ClassColor and C_ClassColor.GetClassColor(default.class)
+	return L["Enregistrée par %s le %s."]:format(color and color:WrapTextInColorCode(name) or name,
+		DateText(default))
+end
+
+local defaultRowItem -- ligne « Disposition par défaut » de la petite fenêtre (infobulle à jour)
+local DEFAULT_ROW_TOOLTIP -- texte fixe de cette ligne, rempli par ns.AddLayoutSettings
+
+-- Infobulle de la ligne mise à jour (enregistrée, effacée, reçue d'un autre client).
+UpdateDefaultRow = function()
+	if defaultRowItem then
+		defaultRowItem.tooltip = DEFAULT_ROW_TOOLTIP .. "|n|n" .. DefaultOrigin()
+	end
+	if P.RefreshOptionsPopups then
+		P.RefreshOptionsPopups()
+	end
+end
+
 -- Applique une disposition (copie) : réglages d'avant gardés pour l'annulation.
 local function ApplyProfile(profile, what, sourceLabel)
 	if not (profile and profile.data) then
@@ -356,9 +381,7 @@ local function SaveDefault()
 	shared.default = { label = OwnLabel(), class = class, updated = GetServerTime(), data = Snapshot() }
 	Message(L["Disposition par défaut enregistrée."])
 	SendProfile(DEFAULT_KEY)
-	if P.RefreshOptionsPopups then
-		P.RefreshOptionsPopups()
-	end
+	UpdateDefaultRow()
 end
 
 local function ClearDefault()
@@ -368,6 +391,7 @@ local function ClearDefault()
 	shared.default = { updated = GetServerTime(), removed = true }
 	Message(L["Disposition par défaut effacée."])
 	SendProfile(DEFAULT_KEY)
+	UpdateDefaultRow()
 end
 
 local function Undo()
@@ -391,6 +415,12 @@ local WHAT = {
 -- Ligne « source » du menu : sous-menu Tout / Position et taille / Options d'affichage.
 local function AddSource(parent, key, profile, text)
 	local entry = parent:CreateButton(text .. "  |cff999999" .. DateText(profile) .. "|r")
+	if key == DEFAULT_KEY and entry.SetTooltip then
+		entry:SetTooltip(function(tooltip)
+			tooltip:SetText(L["Disposition par défaut"])
+			tooltip:AddLine(DefaultOrigin(), 1, 1, 1, true)
+		end)
+	end
 	local source = key == DEFAULT_KEY and L["la disposition par défaut"] or ProfileLabel(key, profile)
 	for _, choice in ipairs(WHAT) do
 		entry:CreateButton(choice[2], function()
@@ -453,12 +483,12 @@ function ns.AddLayoutSettings(category, layout, popupItems)
 		{ L["Disposition par défaut"], L["Enregistrer celle-ci"], SaveDefault,
 			L["Enregistre la disposition de ce personnage comme disposition par défaut : appliquée "
 			.. "d'office à un personnage qui ouvre la carte pour la première fois, et proposée dans "
-			.. "« Copier une disposition »."] },
+			.. "« Copier une disposition »."], true },
 		{ L["Annuler la dernière copie"], L["Annuler"], Undo,
 			L["Revient à la disposition d'avant la dernière copie (pendant cette session)."] },
 	}
 	for index, row in ipairs(rows) do
-		local label, buttonText, onClick, tooltip = row[1], row[2], row[3], row[4]
+		local label, buttonText, onClick, tooltip, isDefaultRow = row[1], row[2], row[3], row[4], row[5]
 		if layout and CreateSettingsButtonInitializer then
 			local ok, initializer = pcall(CreateSettingsButtonInitializer, label, buttonText, function()
 				onClick(nil)
@@ -468,13 +498,18 @@ function ns.AddLayoutSettings(category, layout, popupItems)
 			end
 		end
 		if popupItems and P.OPTIONS_POPUP_BUTTONS then
-			table.insert(popupItems, index, {
+			local item = {
 				kind = "button",
 				setting = { GetName = function() return label end },
 				text = buttonText,
 				onClick = onClick,
 				tooltip = tooltip,
-			})
+			}
+			table.insert(popupItems, index, item)
+			if isDefaultRow then
+				defaultRowItem, DEFAULT_ROW_TOOLTIP = item, tooltip
+				item.tooltip = tooltip .. "|n|n" .. DefaultOrigin()
+			end
 		end
 	end
 end

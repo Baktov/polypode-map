@@ -124,4 +124,6 @@ P.AddTranslations(ns.L, "deDE", {
 	["Enregistre la disposition de ce personnage comme disposition par défaut : appliquée d'office à un personnage qui ouvre la carte pour la première fois, et proposée dans « Copier une disposition »."] = "Speichert die Anordnung dieses Charakters als Standardanordnung: automatisch übernommen von einem Charakter, der die Karte zum ersten Mal öffnet, und angeboten unter »Anordnung kopieren«.",
 	["Revient à la disposition d'avant la dernière copie (pendant cette session)."] = "Kehrt zur Anordnung vor der letzten Kopie zurück (während dieser Sitzung).",
 	["Polypode Map : disposition par défaut appliquée à ce nouveau personnage."] = "Polypode Map: Standardanordnung auf diesen neuen Charakter übernommen.",
+	["Aucune disposition par défaut pour l'instant."] = "Noch keine Standardanordnung.",
+	["Enregistrée par %s le %s."] = "Gespeichert von %s am %s.",
 })

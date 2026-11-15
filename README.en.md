@@ -122,8 +122,8 @@ At the top of the options (panel and small right-click window), three rows, with
   The position follows the screen size (as a percentage): a map at the top right of a large game
   window stays at the top right of a small one.
 - **Default layout** > **Save this one**: this character's layout becomes the default one, **applied
-  automatically** to a character opening the map for the first time (on-screen message). The
-  "Choose..." menu can also clear it.
+  automatically** to a character opening the map for the first time (on-screen message). The tooltip
+  shows which character saved it, and when. The "Choose..." menu can also clear it.
 - **Undo the last copy** > **Undo**: goes back to the previous layout (during the session).
 
 Each character saves its layout in a backup **shared by the WoW account**, on each change and at
