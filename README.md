@@ -116,6 +116,25 @@ Dans **Options → AddOns → Polypode → Map** (sans Polypode : **Options → 
 et dans la petite fenêtre du clic droit (réglages propres à chaque personnage). Sans Polypode, les
 options des personnages de l'équipe et du ping n'apparaissent pas.
 
+### Disposition (copier, par défaut)
+
+En tête des options (panneau et petite fenêtre du clic droit), trois lignes, avec ou sans Polypode :
+
+- **Copier une disposition** → **Choisir...** : la disposition par défaut puis vos autres personnages
+  (couleur de classe, date de leur dernière modification) ; pour chacun, **Tout**, **Position et
+  taille** ou **Options d'affichage**. La position suit la taille de l'écran (en pourcentage) : une
+  carte en haut à droite d'une grande fenêtre de jeu reste en haut à droite d'une petite.
+- **Disposition par défaut** → **Enregistrer celle-ci** : la disposition de ce personnage devient
+  celle par défaut, **appliquée d'office** à un personnage qui ouvre la carte pour la première fois
+  (message à l'écran). Le menu « Choisir... » permet aussi de l'effacer.
+- **Annuler la dernière copie** → **Annuler** : revient à la disposition d'avant (pendant la session).
+
+Chaque personnage enregistre sa disposition dans une sauvegarde **commune au compte** WoW, à chaque
+changement et à la déconnexion. **Avec Polypode**, les dispositions s'échangent aussi entre vos
+clients connectés (et donc entre comptes, utile sur WoW Forever où chaque compte a ses propres
+sauvegardes) ; chaque client garde celles qu'il a reçues. En interface manette, le menu du bouton
+Map propose aussi « Disposition de la carte... ».
+
 | Option | Défaut | Effet |
 |---|---|---|
 | Afficher la carte | Oui | Comme le bouton **Map**, `/poly map` et `/pmap` |
@@ -178,6 +197,7 @@ other language).*
 
 ## Version
 
+`1.13.0` : **dispositions partagées** : copier la position, la taille et les options de la carte d'un autre personnage (tout, position et taille, ou options), disposition **par défaut** appliquée d'office aux nouveaux personnages, annulation de la dernière copie ; position en pourcentage de l'écran ; avec Polypode, échange entre clients connectés (et comptes). Nécessite Polypode 2.24 pour les boutons de la petite fenêtre d'options (sinon : panneau d'options).
 `1.12.0` : Polypode devient **facultatif** : la carte s'installe seule (quêtes, groupe, TomTom, HandyNotes...), commande `/pmap`, **bouton de la minicarte** avec une icône de carte (par défaut sans Polypode) et entrée dans le compartiment d'addons de Retail. Avec Polypode, rien ne change.
 `1.11.0` : interface manette de Blizzard : boutons + et − en bas à gauche de la carte (au survol) pour zoomer sans molette. À la souris, rien ne change.
 `1.10.0` : interface manette de Blizzard : clic droit sur la carte = point TomTom, clic droit sur le bouton Map = menu (options, recentrer) ; infobulle du bouton adaptée (Polypode 2.19). À la souris, rien ne change.

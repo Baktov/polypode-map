@@ -499,6 +499,9 @@ local function SavePosition()
 	local point, _, relativePoint, x, y = frame:GetPoint(1)
 	db.point, db.relativePoint, db.x, db.y = point, relativePoint, x, y
 	db.width, db.height = frame:GetSize()
+	if ns.OnLayoutChanged then
+		ns.OnLayoutChanged() -- copie de la disposition pour les autres personnages (Profiles.lua)
+	end
 end
 
 -- Couleurs du cadre : { valeur, r, g, b } ; "class" = couleur de classe du personnage joué. Libellés
@@ -993,11 +996,11 @@ local function BuildSettingsPanel()
 	if not (Settings and Settings.RegisterProxySetting) then
 		return
 	end
-	local category
+	local category, layout
 	if P.optionsCategory and Settings.RegisterVerticalLayoutSubcategory then
-		category = Settings.RegisterVerticalLayoutSubcategory(P.optionsCategory, L["Map"])
+		category, layout = Settings.RegisterVerticalLayoutSubcategory(P.optionsCategory, L["Map"])
 	else
-		category = Settings.RegisterVerticalLayoutCategory(L["Polypode Map"])
+		category, layout = Settings.RegisterVerticalLayoutCategory(L["Polypode Map"])
 	end
 	-- Chaque réglage est aussi rappelé dans la petite fenêtre du clic droit (P.ToggleOptionsPopup).
 	local popupItems = {}
@@ -1014,6 +1017,9 @@ local function BuildSettingsPanel()
 				Settings_()[field] = value
 				if onChange then
 					onChange(value)
+				end
+				if ns.OnLayoutChanged then
+					ns.OnLayoutChanged()
 				end
 			end)
 	end
@@ -1050,6 +1056,11 @@ local function BuildSettingsPanel()
 			return container:GetData()
 		end, tooltip)
 		popupItems[#popupItems + 1] = { kind = "dropdown", setting = setting, values = values, tooltip = tooltip }
+	end
+
+	-- En tête : disposition (copier depuis un autre personnage, par défaut, annuler), Profiles.lua.
+	if ns.AddLayoutSettings then
+		ns.AddLayoutSettings(category, layout, popupItems)
 	end
 
 	AddCheck("shown", L["Afficher la carte"],
@@ -1195,6 +1206,9 @@ ns.OnLanguageApplied(function()
 						ns.ShowOptions(button)
 					end)
 					root:CreateButton(L["Recentrer la carte"], ns.ResetMap)
+					root:CreateButton(L["Disposition de la carte..."], function()
+						ns.ShowLayoutMenu(button)
+					end)
 				end)
 			elseif mouseButton == "RightButton" then
 				ns.ShowOptions(button)
@@ -1272,6 +1286,7 @@ events:RegisterEvent("ZONE_CHANGED_INDOORS")
 events:SetScript("OnEvent", function(_, event, addonName)
 	if event == "ADDON_LOADED" then
 		if addonName == ADDON_NAME then
+			local isNew = PolypodeMapDB == nil -- premier lancement de la carte sur ce personnage
 			PolypodeMapDB = PolypodeMapDB or {}
 			for key, value in pairs(DEFAULTS) do
 				if PolypodeMapDB[key] == nil then
@@ -1282,6 +1297,10 @@ events:SetScript("OnEvent", function(_, event, addonName)
 			if not PolypodeMapDB.strataDialog then
 				PolypodeMapDB.strata = DEFAULTS.strata
 				PolypodeMapDB.strataDialog = true
+			end
+			-- Dispositions partagées ; disposition par défaut pour un nouveau personnage (Profiles.lua).
+			if ns.OnSettingsLoaded then
+				ns.OnSettingsLoaded(isNew)
 			end
 		end
 	elseif event == "PLAYER_LOGIN" then

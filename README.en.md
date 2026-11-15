@@ -113,6 +113,24 @@ In **Options > AddOns > Polypode > Map** (without Polypode: **Options > AddOns >
 and in the small right-click window (per-character settings). Without Polypode, the team character
 and ping options are not shown.
 
+### Layout (copy, default)
+
+At the top of the options (panel and small right-click window), three rows, with or without Polypode:
+
+- **Copy a layout** > **Choose...**: the default layout, then your other characters (class color,
+  date of their last change); for each, **Everything**, **Position and size** or **Display options**.
+  The position follows the screen size (as a percentage): a map at the top right of a large game
+  window stays at the top right of a small one.
+- **Default layout** > **Save this one**: this character's layout becomes the default one, **applied
+  automatically** to a character opening the map for the first time (on-screen message). The
+  "Choose..." menu can also clear it.
+- **Undo the last copy** > **Undo**: goes back to the previous layout (during the session).
+
+Each character saves its layout in a backup **shared by the WoW account**, on each change and at
+logout. **With Polypode**, layouts are also exchanged between your connected clients (and so between
+accounts, useful on WoW Forever where each account has its own saved variables); each client keeps
+the ones it received. With the gamepad interface, the Map button menu also offers "Map layout...".
+
 | Option | Default | Effect |
 |---|---|---|
 | Show the map | Yes | Like the **Map** button, `/poly map` and `/pmap` |
