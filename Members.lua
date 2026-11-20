@@ -552,6 +552,14 @@ ns.OnLanguageApplied(function()
 			positions[key] = nil
 			ns.RefreshMembers()
 		end,
+		-- Fusion de deux fiches d'un même personnage (Polypode 2.32) : position reprise si besoin.
+		merge = function(from, to)
+			if from ~= to and positions[from] then
+				positions[to] = positions[to] or positions[from]
+				positions[from] = nil
+				ns.RefreshMembers()
+			end
+		end,
 	})
 end)
 
