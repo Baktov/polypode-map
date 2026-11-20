@@ -90,7 +90,7 @@ point de Blizzard sous le repère.
 - Blizzard : exploration, points d'intérêt, maîtres de vol, entrées de donjon et de gouffre,
   vignettes (rares, trésors visibles), événements, champs de bataille, tombe du joueur...
 - **Quêtes** (option) : quêtes en cours et disponibles, objectifs bonus, contenu suivi, point de
-  navigation ; **expéditions** (option).
+  navigation, zone bleue des objectifs de la quête suivie (survolée ou mise en avant aussi) ; **expéditions** (option).
 - **TomTom** (option) : les points de TomTom et des autres addons qui passent par la librairie
   HereBeDragons. Quand la grande carte (M) est ouverte, ils y sont ; ils reviennent sur la petite
   carte à sa fermeture.
@@ -152,7 +152,7 @@ Map propose aussi « Disposition de la carte... ».
 | Taille des personnages | 100 % | Votre flèche, les points du groupe et les repères de Polypode |
 | Noms des personnages | Oui | Nom au-dessus de chaque repère |
 | Tous les personnages | Non | Tout le roster au lieu de l'équipe sélectionnée |
-| Quêtes | Oui | Quêtes, objectifs bonus, contenu suivi |
+| Quêtes | Oui | Quêtes, objectifs bonus, contenu suivi, zone bleue des objectifs de la quête suivie |
 | Expéditions | Oui | Quêtes mondiales de la zone |
 | Points TomTom | Oui | Points TomTom / HereBeDragons ; Alt + clic droit pour en créer |
 | HandyNotes | Oui | Notes de HandyNotes |
@@ -198,6 +198,7 @@ other language).*
 
 ## Version
 
+`1.15.0` : quêtes : la **zone bleue des objectifs** de la quête suivie (là où trouver les créatures ou les objets) s'affiche sur la carte, comme sur la grande carte du monde.
 `1.14.0` : avec Polypode 2.32, la **fusion de deux fiches** d'un même personnage reprend sa position sur la carte pour la fiche gardée.
 `1.13.1` : disposition par défaut : le personnage qui l'a enregistrée et la date sont indiqués dans l'infobulle (ligne « Disposition par défaut » des options et entrée du menu « Copier depuis »).
 `1.13.0` : **dispositions partagées** : copier la position, la taille et les options de la carte d'un autre personnage (tout, position et taille, ou options), disposition **par défaut** appliquée d'office aux nouveaux personnages, annulation de la dernière copie ; position en pourcentage de l'écran ; avec Polypode, échange entre clients connectés (et comptes). Nécessite Polypode 2.24 pour les boutons de la petite fenêtre d'options (sinon : panneau d'options).

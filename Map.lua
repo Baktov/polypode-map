@@ -139,8 +139,11 @@ local PROVIDER_GROUPS = {
 		"AreaPOIDataProviderMixin", "AreaPOIEventDataProviderMixin", "QuestSessionDataProviderMixin",
 		"DragonridingRaceDataProviderMixin",
 	},
+	-- QuestBlob : zone bleue des objectifs de la quête suivie (super-suivi), survolée ou mise en avant,
+	-- comme sur la carte du monde (1.15.0).
 	quests = {
-		"QuestOfferDataProviderMixin", "BonusObjectiveDataProviderMixin", "QuestDataProviderMixin",
+		"QuestOfferDataProviderMixin", "BonusObjectiveDataProviderMixin", "QuestBlobDataProviderMixin",
+		"QuestDataProviderMixin",
 		"ContentTrackingDataProviderMixin", "WaypointLocationDataProviderMixin",
 		"SuperTrackWaypointDataProviderMixin",
 	},

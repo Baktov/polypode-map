@@ -87,7 +87,8 @@ marker.
 
 - Blizzard: exploration, points of interest, flight masters, dungeon and delve entrances, vignettes
   (rares, visible treasures), events, battlegrounds, player's corpse...
-- **Quests** (option): current and available quests, bonus objectives, tracked content, waypoint;
+- **Quests** (option): current and available quests, bonus objectives, tracked content, waypoint,
+  blue objective area of the tracked quest (also when hovered or highlighted);
   **world quests** (option).
 - **TomTom** (option): the waypoints of TomTom and of other addons going through the HereBeDragons
   library. When the big map (M) is open, they are on it; they come back on the small map when it
@@ -147,7 +148,7 @@ the ones it received. With the gamepad interface, the Map button menu also offer
 | Character size | 100% | Your arrow, the group dots and the Polypode markers |
 | Character names | Yes | Name above each marker |
 | All characters | No | The whole roster instead of the selected team |
-| Quests | Yes | Quests, bonus objectives, tracked content |
+| Quests | Yes | Quests, bonus objectives, tracked content, blue objective area of the tracked quest |
 | World quests | Yes | World quests of the zone |
 | TomTom waypoints | Yes | TomTom / HereBeDragons waypoints; Alt + right-click to create one |
 | HandyNotes | Yes | HandyNotes notes |
