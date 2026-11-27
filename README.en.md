@@ -55,7 +55,7 @@ the map is also in the **addon compartment** (addons button of the minimap), wit
 | Header padlock | Lock / unlock the map (no moving or resizing) |
 | Mouse wheel | Smooth zoom (×1.2 per notch) toward the point under the cursor, deeper than Blizzard's map, kept from one zone to the next |
 | Drag on the map | Move the view |
-| Click on the map | **Ping**: animated 5 s signal, also shown on the map of your other characters |
+| Click on the map (not on a marker) | **Ping**: animated 5 s signal, also shown on the map of your other characters |
 | Alt + right-click | **TomTom** waypoint at this spot (if TomTom is installed) |
 | Header close button | Hide the map |
 

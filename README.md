@@ -57,7 +57,7 @@ options, glisser = le déplacer autour de la minicarte. Sur Retail, la carte fig
 | Cadenas de l'en-tête | Figer / libérer la carte (ni déplacement ni redimensionnement) |
 | Molette | Zoom fluide (×1,2 par cran) vers le point sous le curseur, plus profond que la carte de Blizzard, gardé d'une zone à l'autre |
 | Glisser sur la carte | Déplacer la vue |
-| Clic sur la carte | **Ping** : signal animé de 5 s, montré aussi sur la carte de vos autres personnages |
+| Clic sur la carte (hors repère) | **Ping** : signal animé de 5 s, montré aussi sur la carte de vos autres personnages |
 | Alt + clic droit | Point **TomTom** à cet endroit (si TomTom est installé) |
 | Croix de l'en-tête | Masquer la carte |
 
@@ -198,6 +198,7 @@ other language).*
 
 ## Version
 
+`1.15.1` : un clic sur un repère (quête suivie, point TomTom...) ne lance plus de ping en plus, même quand la carte est très zoomée.
 `1.15.0` : quêtes : la **zone bleue des objectifs** de la quête suivie (là où trouver les créatures ou les objets) s'affiche sur la carte, comme sur la grande carte du monde.
 `1.14.0` : avec Polypode 2.32, la **fusion de deux fiches** d'un même personnage reprend sa position sur la carte pour la fiche gardée.
 `1.13.1` : disposition par défaut : le personnage qui l'a enregistrée et la date sont indiqués dans l'infobulle (ligne « Disposition par défaut » des options et entrée du menu « Copier depuis »).

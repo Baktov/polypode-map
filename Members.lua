@@ -486,9 +486,34 @@ end
 
 local lastPing = -math.huge
 
--- Clic gauche sur la carte (sans touche de modification) : ping local et chez les autres clients.
+-- Curseur sur un repère cliquable d'un fournisseur (quête, point TomTom...) : le clic lui revient,
+-- pas de ping. Le clic peut traverser le repère jusqu'à la carte (selon le zoom, ou repère d'un
+-- autre addon) ; on écarte nos repères et ceux qui couvrent la carte (zone de quête, chemin...).
+local function IsOverPin()
+	local map = ns.canvas
+	local scroll = map and map.ScrollContainer
+	if not (map and scroll and map.EnumerateAllPins) then
+		return false
+	end
+	local maxSize = scroll:GetWidth() * scroll:GetEffectiveScale() * 0.5
+	for pin in map:EnumerateAllPins() do
+		local ok, over = pcall(function()
+			local template = pin.pinTemplate
+			return pin:IsVisible() and pin:IsMouseOver() and pin:IsMouseClickEnabled()
+				and not (type(template) == "string" and template:find("^PolypodeMap"))
+				and pin:GetWidth() * pin:GetEffectiveScale() < maxSize
+		end)
+		if ok and over then
+			return true
+		end
+	end
+	return false
+end
+
+-- Clic gauche sur la carte (sans touche de modification, hors repère) : ping local et chez les
+-- autres clients.
 local function OnCanvasClick(button, cursorX, cursorY)
-	if button ~= "LeftButton" or not Settings().ping or IsModifierKeyDown() then
+	if button ~= "LeftButton" or not Settings().ping or IsModifierKeyDown() or IsOverPin() then
 		return false
 	end
 	local now = GetTime()
