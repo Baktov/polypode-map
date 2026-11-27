@@ -89,6 +89,12 @@ point de Blizzard sous le repère.
 
 - Blizzard : exploration, points d'intérêt, maîtres de vol, entrées de donjon et de gouffre,
   vignettes (rares, trésors visibles), événements, champs de bataille, tombe du joueur...
+- **Zones inexplorées** (option, WoW Forever) : les parties de la zone que le personnage n'a pas
+  encore explorées sont dessinées en bleuté au lieu de rester vides (données reprises de l'addon
+  **MapUtils** de D4KiR, sous licence GPL-3.0 ; la grande carte reste gérée par MapUtils).
+- **Niveau des zones** (option) : dans l'en-tête, tranche de niveaux après le nom de la zone, en
+  couleur selon la difficulté pour le personnage (gris ou vert : facile, orange : à votre niveau,
+  rouge : trop haut) ; sur WoW Forever, tranches de MapUtils, sinon celles du jeu.
 - **Quêtes** (option) : quêtes en cours et disponibles, objectifs bonus, contenu suivi, point de
   navigation, zone bleue des objectifs de la quête suivie (survolée ou mise en avant aussi) ; **expéditions** (option).
 - **TomTom** (option) : les points de TomTom et des autres addons qui passent par la librairie
@@ -159,6 +165,8 @@ Map propose aussi « Disposition de la carte... ».
 | BtWQuests | Oui | Quêtes disponibles et objectifs de BtWQuests |
 | MidnightRoutine | Oui | Point de navigation de MidnightRoutine |
 | Naowh Forever | Oui | Chemin du trajet en cours de Naowh Forever (Journeys) |
+| Zones inexplorées | Oui | Parties non explorées des zones en bleuté (WoW Forever seulement) |
+| Niveau des zones | Oui | Tranche de niveaux après le nom de la zone, dans l'en-tête |
 | Ping au clic | Oui | Clic sur la carte : ping chez vous et vos autres personnages |
 | Plan de la fenêtre | 5 - Dialogue | Plan d'affichage, du plus haut (7 - Plein écran dialogue) au plus bas (1 - Arrière-plan) ; « Dialogue » passe devant les barres d'action et la plupart des fenêtres, descendre si la carte cache quelque chose |
 
@@ -182,6 +190,9 @@ Polypode Map est un logiciel libre, sous licence **GNU GPL version 3** (fichier
 [`LICENSE`](LICENSE)) : vous pouvez le reprendre, le modifier et le redistribuer, à condition de
 garder cette licence et de citer l'auteur. Copyright (C) 2026 Baktov.
 
+Les calques des zones inexplorées et les niveaux des zones de WoW Forever (`ZoneData.lua`)
+viennent de **MapUtils** de D4KiR (GPL-3.0).
+
 ## Langues (Languages)
 
 Polypode Map s'affiche dans la langue choisie dans Polypode (option « Langue / Language », `/poly langue`),
@@ -198,6 +209,7 @@ other language).*
 
 ## Version
 
+`1.16.0` : **zones inexplorées** en bleuté (WoW Forever, données reprises de MapUtils) et **niveau des zones** dans l'en-tête, après le nom de la zone (deux options).
 `1.15.1` : un clic sur un repère (quête suivie, point TomTom...) ne lance plus de ping en plus, même quand la carte est très zoomée.
 `1.15.0` : quêtes : la **zone bleue des objectifs** de la quête suivie (là où trouver les créatures ou les objets) s'affiche sur la carte, comme sur la grande carte du monde.
 `1.14.0` : avec Polypode 2.32, la **fusion de deux fiches** d'un même personnage reprend sa position sur la carte pour la fiche gardée.

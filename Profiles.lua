@@ -193,6 +193,12 @@ local function RefreshAll()
 	if ns.RefreshHover then
 		ns.RefreshHover()
 	end
+	if ns.RefreshReveal then
+		ns.RefreshReveal()
+	end
+	if ns.RefreshZoneText then
+		ns.RefreshZoneText()
+	end
 	if P.RefreshOptionsPopups then
 		P.RefreshOptionsPopups()
 	end

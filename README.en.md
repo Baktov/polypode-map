@@ -87,6 +87,12 @@ marker.
 
 - Blizzard: exploration, points of interest, flight masters, dungeon and delve entrances, vignettes
   (rares, visible treasures), events, battlegrounds, player's corpse...
+- **Unexplored areas** (option, WoW Forever): the parts of the zone the character has not
+  explored yet are drawn in blue instead of staying empty (data taken from the **MapUtils** addon
+  by D4KiR, GPL-3.0; the big map stays handled by MapUtils).
+- **Zone levels** (option): in the header, level range after the zone name, colored by difficulty
+  for the character (grey or green: easy, orange: your level, red: too high); on WoW Forever,
+  MapUtils ranges, otherwise the game's.
 - **Quests** (option): current and available quests, bonus objectives, tracked content, waypoint,
   blue objective area of the tracked quest (also when hovered or highlighted);
   **world quests** (option).
@@ -155,6 +161,8 @@ the ones it received. With the gamepad interface, the Map button menu also offer
 | BtWQuests | Yes | Available quests and objectives of BtWQuests |
 | MidnightRoutine | Yes | MidnightRoutine waypoint |
 | Naowh Forever | Yes | Path of the current Naowh Forever journey (Journeys) |
+| Unexplored areas | Yes | Unexplored parts of the zones in blue (WoW Forever only) |
+| Zone levels | Yes | Level range after the zone name, in the header |
 | Ping on click | Yes | Click on the map: ping for you and your other characters |
 | Window layer | 5 - Dialog (default) | Display layer, from the highest (7 - Fullscreen (dialog)) to the lowest (1 - Background); "Dialog" goes in front of the action bars and most windows, go lower if the map hides something |
 
@@ -176,6 +184,9 @@ the ones it received. With the gamepad interface, the Map button menu also offer
 Polypode Map is free software, under the **GNU GPL version 3** ([`LICENSE`](LICENSE)
 file): you may take it, modify it and redistribute it, as long as you keep this license and
 credit the author. Copyright (C) 2026 Baktov.
+
+The unexplored area overlays and the WoW Forever zone levels (`ZoneData.lua`) come from
+**MapUtils** by D4KiR (GPL-3.0).
 
 ## Languages
 

@@ -49,6 +49,8 @@ local DEFAULTS = {
 	showMidnightRoutine = true, -- point de navigation de MidnightRoutine
 	showNaowhRoute = true, -- chemin du trajet en cours de Naowh Forever (Journeys)
 	ping = true, -- clic gauche = ping montré aux autres clients
+	revealMap = true, -- parties inexplorées des zones, teintées (WoW Forever, Zones.lua)
+	showZoneLevels = true, -- tranche de niveaux après le nom de la zone dans l'en-tête (Zones.lua)
 	zoom = 0, -- 0 à 1 : niveau de zoom gardé d'une carte à l'autre
 	minimapButton = not ns.hasPolypode, -- bouton de la minicarte (par défaut : seulement sans Polypode)
 	minimapAngle = 215, -- position du bouton autour de la minicarte (degrés)
@@ -64,6 +66,12 @@ local function IsSecret(value)
 	return issecretvalue ~= nil and issecretvalue(value)
 end
 ns.IsSecret = IsSecret
+
+-- WoW Forever (client 16xxx), comme MapUtils : données de ZoneData.lua propres à ce client.
+function ns.IsForever()
+	local toc = select(4, GetBuildInfo()) or 0
+	return toc >= 16000 and toc < 20000
+end
 
 local frame, canvas, header, zoneText, coordText, grip, lockButton
 local zoomButtons = {} -- boutons + / − de l'interface manette (affichés au survol, UpdateHover)
@@ -596,11 +604,21 @@ local function UpdateZoneText()
 		local info = mapID and C_Map.GetMapInfo(mapID)
 		text = info and info.name or text
 	end
+	if ns.ZoneLevelText then
+		text = text .. ns.ZoneLevelText(mapID) -- niveaux de la zone affichée (Zones.lua)
+	end
 	zoneText:SetText(text)
 	local getPvPInfo = C_PvP and C_PvP.GetZonePVPInfo or GetZonePVPInfo
 	local pvpType = getPvPInfo and getPvPInfo()
 	local color = mapID == PlayerMapID() and PVP_COLORS[pvpType or ""] or { 1, 0.82, 0 }
 	zoneText:SetTextColor(color[1], color[2], color[3])
+end
+
+-- Nom de zone redessiné (option showZoneLevels, disposition copiée) si la carte est construite.
+function ns.RefreshZoneText()
+	if zoneText and canvas then
+		UpdateZoneText()
+	end
 end
 
 local function FormatCoords(x, y)
@@ -909,6 +927,9 @@ local function Build()
 	if ns.InitPlugins then
 		ns.InitPlugins(canvas)
 	end
+	if ns.InitReveal then
+		ns.InitReveal(canvas) -- zones inexplorées sur le repère d'exploration
+	end
 
 	-- Option autoFit : chaque changement de carte (zone, suivi du joueur, lien de carte) ajuste le
 	-- cadre, à l'image suivante (la carte finit de se mettre en place dans SetMapID).
@@ -1156,6 +1177,14 @@ local function BuildSettingsPanel()
 	AddCheck("showNaowhRoute", "Naowh Forever",
 		L["Chemin du trajet en cours de Naowh Forever (Journeys), en pointillés comme sur sa carte du monde, "
 		.. "si l'addon est installé (WoW Forever)."], ns.ApplyProviders)
+	if ns.REVEAL_DATA then
+		AddCheck("revealMap", L["Zones inexplorées"],
+			L["Montre en bleuté les parties des zones que ce personnage n'a pas encore explorées "
+			.. "(données reprises de l'addon MapUtils, WoW Forever)."], ns.RefreshReveal)
+	end
+	AddCheck("showZoneLevels", L["Niveau des zones"],
+		L["Dans l'en-tête, ajoute après le nom de la zone sa tranche de niveaux, en couleur selon la "
+		.. "difficulté pour ce personnage."], ns.RefreshZoneText)
 	if ns.hasPolypode then
 		AddCheck("ping", L["Ping au clic"],
 			L["Clic sur la carte : signal animé à cet endroit, montré aussi sur la carte des autres personnages "
